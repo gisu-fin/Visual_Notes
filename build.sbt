@@ -116,6 +116,7 @@ libraryDependencies ++= Seq(
   "org.junit.jupiter"  % "junit-jupiter-params"           % junit_version % Test,
   "net.jqwik"          % "jqwik"                          % "1.2.0" % Test,
   "org.scalatest"      %% "scalatest"                     % "3.0.8" % Test,
+  "fi.utu.tech"        % "spatial-data"                   % "1.0",
 )
 
 testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-c")
