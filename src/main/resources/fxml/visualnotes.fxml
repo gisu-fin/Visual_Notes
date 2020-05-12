@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VisualnotesController">
+   <children>
+      <BorderPane layoutX="4.0" layoutY="6.0" prefHeight="390.0" prefWidth="593.0">
+         <center>
+            <Canvas fx:id="canvas" height="400.0" width="500.0" BorderPane.alignment="CENTER" />
+         </center>
+         <left>
+            <VBox prefHeight="248.0" prefWidth="100.0" spacing="6.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView id="line" fx:id="viiva" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#handleLine" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../vector.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="circle" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="171.0" onMouseClicked="#handleCircle" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../circular-shape.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView id="square" fx:id="square" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="227.0" onMouseClicked="#handleSquare" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../mathematics.png" />
+                     </image>
+                  </ImageView>
+                  <ColorPicker fx:id="colorPicker" />
+               </children>
+               <padding>
+                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+               </padding>
+            </VBox>
+         </left>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem fx:id="save" mnemonicParsing="false" onAction="#handleSaveClicked" text="Save" />
+                        <MenuItem fx:id="load" mnemonicParsing="false" onAction="#handleLoadClicked" text="Load" />
+                        <MenuItem fx:id="exit" mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem fx:id="reset" mnemonicParsing="false" onAction="#handleReset" text="Reset" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem fx:id="about" mnemonicParsing="false" onAction="#handleAbout" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>
