@@ -1,5 +1,6 @@
 package fi.utu.tech.visualnotes.graphics.shapes;
 
+import controllers.VisualnotesController;
 import fi.utu.tech.graphics.Point2D;
 import fi.utu.tech.visualnotes.graphics.Color;
 import javafx.scene.canvas.GraphicsContext;
@@ -17,7 +18,9 @@ public class Rectangle extends Shape {
     @Override
     public void render(GraphicsContext context, Point2D offset) {
         super.render(context, offset);
-        if (filled) context.fillRect(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
+        if (VisualnotesController.getFill()) {
+            context.fillRect(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
+        }
         context.strokeRect(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
     }
 }

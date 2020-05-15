@@ -39,7 +39,8 @@ public class VisualnotesController {
 
     Muoto muoto;
 
-    Color color;
+    //g.setFill(colorPicker.getValue());
+    Color color = Color.Blue;
 
     @FXML
     protected Line line;
@@ -64,8 +65,6 @@ public class VisualnotesController {
 
         //piirto toimii
         gc = canvas.getGraphicsContext2D();
-        //g.setFill(colorPicker.getValue());
-        color = Color.Blue;
 
         canvas.setOnMousePressed(this::mousePressed);
         canvas.setOnMouseReleased(this::mouseReleased);
