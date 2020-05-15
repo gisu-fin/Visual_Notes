@@ -17,7 +17,9 @@ public class Oval extends Shape {
     @Override
     public void render(GraphicsContext context, Point2D offset) {
         super.render(context, offset);
-        if (filled) context.fillOval(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
+        if (filled) {
+            context.fillOval(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
+        }
         context.strokeOval(topLeft().x - offset.x, topLeft().y - offset.y, bottomRight().x - topLeft().x, bottomRight().y - topLeft().y);
     }
 }

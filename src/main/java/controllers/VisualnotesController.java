@@ -2,12 +2,9 @@ package controllers;
 
 import fi.utu.tech.graphics.Point2D;
 import fi.utu.tech.visualnotes.graphics.Color;
-import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
-import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Line;
 import fi.utu.tech.visualnotes.graphics.shapes.Oval;
 import fi.utu.tech.visualnotes.graphics.shapes.Rectangle;
-import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -16,11 +13,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.util.Collection;
 
 public class VisualnotesController {
 
@@ -44,9 +41,11 @@ public class VisualnotesController {
 
     Color color;
 
+    @FXML
     protected Line line;
     protected Oval oval;
     protected Rectangle rectangle;
+    public static Boolean fill;
     protected double startX;
     protected double startY;
     protected GraphicsContext gc;
@@ -54,12 +53,14 @@ public class VisualnotesController {
     protected Point2D p2;
     protected Point2D offset = new Point2D(1,1);
 
+    public static boolean getFill(){
+        return fill;
+    }
+
     @FXML
     public void initialize(){
 
         System.out.println("initialize");
-
-
 
         //piirto toimii
         gc = canvas.getGraphicsContext2D();
@@ -166,17 +167,33 @@ public class VisualnotesController {
 
     public void handleLine(MouseEvent mouseEvent) {
         System.out.println("line");
+        fill = true;
         muoto = Muoto.LINE;
+        System.out.println("line" + fill);
     }
 
-    public void handleCircle(MouseEvent mouseEvent) {
-        System.out.println("circle");
+    public void handleSquareFilled(MouseEvent mouseEvent) {
+        System.out.println("squera filled before " + fill);
+        fill = true;
+        muoto = Muoto.SQUARE;
+        System.out.println("squera filled after " + fill);
+    }
+
+    public void handleSquareStroke(MouseEvent mouseEvent) {
+        System.out.println("square stroke before " + fill);
+        fill = false;
+        muoto = Muoto.SQUARE;
+        System.out.println("square stroke after " + fill);
+    }
+
+    public void handleCircleFilled(MouseEvent mouseEvent) {
+        fill = true;
         muoto = Muoto.CIRCLE;
     }
 
-    public void handleSquare(MouseEvent mouseEvent) {
-        System.out.println("neliö");
-        muoto = Muoto.SQUARE;
+    public void handleCircleStroke(MouseEvent mouseEvent) {
+        fill = false;
+        muoto = Muoto.CIRCLE;
     }
 
 }

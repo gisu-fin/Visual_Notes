@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.*?>
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VisualnotesController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1003.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VisualnotesController">
    <children>
-      <BorderPane layoutX="4.0" layoutY="6.0" prefHeight="390.0" prefWidth="593.0">
-         <center>
-            <Canvas fx:id="canvas" height="400.0" width="500.0" BorderPane.alignment="CENTER" />
-         </center>
+      <BorderPane layoutX="-3.0" layoutY="-1.0" prefHeight="677.0" prefWidth="1010.0">
          <left>
             <VBox prefHeight="248.0" prefWidth="100.0" spacing="6.0" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView id="line" fx:id="viiva" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#handleLine" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="lined" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#handleLine" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../vector.png" />
+                        <Image url="@../line.png" />
                      </image>
                   </ImageView>
-                  <ImageView fx:id="circle" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="171.0" onMouseClicked="#handleCircle" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="circleStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="171.0" onMouseClicked="#handleCircleStroke" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../circular-shape.png" />
+                        <Image url="@../circle-stroke.png" />
                      </image>
                   </ImageView>
-                  <ImageView id="square" fx:id="square" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="227.0" onMouseClicked="#handleSquare" pickOnBounds="true" preserveRatio="true">
+                  <ImageView id="square" fx:id="circleFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="227.0" onMouseClicked="#handleCircleFilled" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../mathematics.png" />
+                        <Image url="@../circle-filled.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView id="line" fx:id="squareStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="16.0" onMouseClicked="#handleSquareStroke" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../rect-stroke.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="squareFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="72.0" onMouseClicked="#handleSquareFilled" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../rect-filled.png" />
                      </image>
                   </ImageView>
                   <ColorPicker fx:id="colorPicker" />
@@ -38,7 +47,7 @@
             </VBox>
          </left>
          <top>
-            <MenuBar BorderPane.alignment="CENTER">
+            <MenuBar cache="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="996.0" BorderPane.alignment="CENTER">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
@@ -58,8 +67,26 @@
                   </items>
                 </Menu>
               </menus>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+               <effect>
+                  <ColorAdjust brightness="-0.12" contrast="-0.1" />
+               </effect>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
             </MenuBar>
          </top>
+         <center>
+            <Canvas fx:id="canvas" height="617.0" width="814.0" BorderPane.alignment="CENTER" />
+         </center>
       </BorderPane>
    </children>
 </AnchorPane>

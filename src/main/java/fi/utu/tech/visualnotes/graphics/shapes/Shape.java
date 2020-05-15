@@ -1,5 +1,6 @@
 package fi.utu.tech.visualnotes.graphics.shapes;
 
+import controllers.VisualnotesController;
 import fi.utu.tech.graphics.Point2D;
 import fi.utu.tech.graphics.Region;
 import fi.utu.tech.visualnotes.graphics.Color;
@@ -37,9 +38,13 @@ public abstract class Shape implements Region, Comparable<Shape> {
         return z - o.z;
     }
 
+
     public void render(GraphicsContext context, Point2D offset) {
         javafx.scene.paint.Color c = focused ? color.toFx().invert() : color.toFx();
-        context.setFill(c);
+        System.out.println(VisualnotesController.getFill());
+        if (VisualnotesController.getFill()) {
+            context.setFill(c);
+        }
         context.setStroke(c);
     }
 
