@@ -1,51 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.canvas.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.effect.ColorAdjust?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1003.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VisualnotesController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="677.0" prefWidth="1003.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.VisualnotesController">
    <children>
       <BorderPane layoutX="-3.0" layoutY="-1.0" prefHeight="677.0" prefWidth="1010.0">
-         <left>
-            <VBox prefHeight="248.0" prefWidth="100.0" spacing="6.0" BorderPane.alignment="CENTER">
-               <children>
-                  <ImageView fx:id="lined" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#handleLine" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../line.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="circleStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="171.0" onMouseClicked="#handleCircleStroke" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../circle-stroke.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView id="square" fx:id="circleFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="227.0" onMouseClicked="#handleCircleFilled" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../circle-filled.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView id="line" fx:id="squareStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="16.0" onMouseClicked="#handleSquareStroke" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../rect-stroke.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fx:id="squareFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="72.0" onMouseClicked="#handleSquareFilled" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../rect-filled.png" />
-                     </image>
-                  </ImageView>
-                  <ColorPicker fx:id="colorPicker" />
-               </children>
-               <padding>
-                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
-               </padding>
-            </VBox>
-         </left>
          <top>
             <MenuBar cache="true" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="996.0" BorderPane.alignment="CENTER">
               <menus>
@@ -84,9 +56,45 @@
                </BorderPane.margin>
             </MenuBar>
          </top>
-         <center>
+         <right>
+            <VBox prefHeight="248.0" prefWidth="100.0" spacing="6.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" onMouseClicked="#handleDrag" text="Drag" />
+                  <ImageView fx:id="lined" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#handleLine" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../line.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="circleStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="171.0" onMouseClicked="#handleCircleStroke" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../circle-stroke.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView id="square" fx:id="circleFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="227.0" onMouseClicked="#handleCircleFilled" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../circle-filled.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView id="line" fx:id="squareStroke" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="16.0" onMouseClicked="#handleSquareStroke" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../rect-stroke.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="squareFilled" fitHeight="50.0" fitWidth="50.0" layoutX="16.0" layoutY="72.0" onMouseClicked="#handleSquareFilled" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../rect-filled.png" />
+                     </image>
+                  </ImageView>
+                  <ColorPicker fx:id="colorPicker" />
+               </children>
+               <padding>
+                  <Insets bottom="6.0" left="6.0" right="6.0" top="6.0" />
+               </padding>
+            </VBox>
+         </right>
+         <left>
             <Canvas fx:id="canvas" height="617.0" width="814.0" BorderPane.alignment="CENTER" />
-         </center>
+         </left>
       </BorderPane>
    </children>
 </AnchorPane>
