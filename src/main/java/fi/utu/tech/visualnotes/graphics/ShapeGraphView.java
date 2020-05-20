@@ -40,7 +40,9 @@ public class ShapeGraphView {
     private final Rect tmp = new Rect(new Point2D(0, 0), new Point2D(0, 0));
     private Shape ret = null;
 
-    private final Consumer<Shape> selector = s -> ret = s;
+    private final Consumer<Shape> selector = s -> {
+        ret = s;
+    };
 
     public Optional<Shape> extractShape(Point2D p) {
         int dist = 3;
@@ -50,9 +52,12 @@ public class ShapeGraphView {
 
         ret = null;
         root.handleIntersections(tmp, selector);
-        if (ret == null) return Optional.empty();
-
+        if (ret == null) {
+            return Optional.empty();
+        }
+        System.out.println("SGV:n extractShapessa ennen removea: " + root.toString());
         root.remove(ret);
+        //System.out.println("SGV:n extractShapessa jälkeen removen: " + root.toString());
         return Optional.of(ret);
     }
 

@@ -43,23 +43,24 @@ public class VisualNotesController {
     //g.setFill(colorPicker.getValue());
     Color color = Color.Blue;
 
-    @FXML
-    protected Line line;
+    //@FXML
+    //protected Line line;
     protected Oval oval;
     protected Rectangle rectangle;
     public static Boolean fill;
     protected double startX;
     protected double startY;
-    protected GraphicsContext graphicsContext;
-    protected Point2D pointStart;
-    protected Point2D pointEnd;
-    protected Point2D offset = new Point2D(1,1);
-    protected Point2D drag;
-    protected Shape.ShapeType shapeType;
-    protected Shape shape;
-    protected ShapeGraphRoot root = new ShapeGraphRoot();
-    protected ShapeGraphView view;
-    protected Optional<Shape> moving;
+    public GraphicsContext graphicsContext;
+    public Point2D pointStart;
+    public Point2D pointEnd;
+    public Point2D offset = new Point2D(1,1);
+    public Point2D drag;
+    public Shape.ShapeType shapeType;
+    public Shape shape;
+    public ShapeGraphRoot root = new ShapeGraphRoot();
+    public ShapeGraphView view;
+    public Optional<Shape> moving;
+    protected Collection<Shape> shapes = view.visibleShapes();
 
     public static boolean getFill(){
         return fill;
@@ -90,19 +91,13 @@ public class VisualNotesController {
      */
 
     void mousePressed (MouseEvent me) {
-        //line.setStartX(me.getSceneX());
-        //line.setStartY(me.getSceneY());
-        /*
-        ---------------------------Auttaako ongelmaan getSceneX() - työkalupalkin leveys? Voiko tulla null juttui?-----------
-         */
+
         System.out.println("if pressed " + me.getX() + me.getY() + " tai  " + me.getSceneX() + me.getSceneY());
         pointStart = new Point2D(me.getX(), me.getY());
     }
 
     void mouseReleased (MouseEvent me) {
 
-        //line.setEndX(me.getSceneX());
-        //line.setEndY(me.getSceneY());
         System.out.println("if released" + me.getX() + " " + me.getY());
         //gc.strokeLine(startX, startY, me.getSceneX(), me.getSceneY());
         pointEnd = new Point2D(me.getX(), me.getY());
@@ -111,9 +106,7 @@ public class VisualNotesController {
             Shape a = view.createShape(shapeType, color, pointStart, pointEnd);
             root.add(a);
             a.render(graphicsContext, offset);
-            Collection<Shape> shapes = view.visibleShapes();
             System.out.println("lisätty a " + shapes.size());
-            //assert(shapes.size() == 1);
 
         }else {
             /*
@@ -121,16 +114,20 @@ public class VisualNotesController {
             double offY = pointEnd.y - pointStart.y;
             drag = new Point2D(offX, offY);
              */
-            //TODO tärkeys:1 - palikat liikkuu mutta väärään suuntaan ja vain kerran. :D katso aamulla uudestaan
+            //TODO tärkeys:1 - palikat jää näkyviin
             System.out.println("mouse release else" + pointStart);
             moving = view.extractShape(pointStart);
             System.out.println("drag " + moving.isPresent());
             if (moving.isPresent()){
                 Shape s = moving.get();
-                drag = new Point2D(pointEnd.x-s.topLeft().x, pointEnd.y-s.topLeft().y);
+                System.out.println(s.toString());
+                drag = new Point2D(pointStart.sub(pointEnd));
                 s.move(drag);
+                root.add(s);
                 s.render(graphicsContext, drag);
-                System.out.println("moving iffissä " +drag);
+                Collection<Shape> shapes = view.visibleShapes();
+                System.out.println("lisätty kopio " + shapes.size());
+                System.out.println("moving if drag on " + drag);
             }
         }
 
@@ -176,6 +173,7 @@ public class VisualNotesController {
 
     public void handleReset(ActionEvent actionEvent) {
         System.out.println("handle reset");
+        root.clear();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
@@ -192,13 +190,7 @@ public class VisualNotesController {
         System.out.println("line" + fill);
         canvas.setCursor(Cursor.DEFAULT);
     }
-/*
-    public void lineMove(MouseEvent mouseEvent) {
-        line.move(drag);
-    }
 
-
- */
     public void handleSquareFilled(MouseEvent mouseEvent) {
         System.out.println("squera filled before " + fill);
         fill = true;
