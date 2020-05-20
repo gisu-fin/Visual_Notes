@@ -4,7 +4,6 @@ import fi.utu.tech.graphics.Point2D;
 import fi.utu.tech.visualnotes.graphics.Color;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
-import fi.utu.tech.visualnotes.graphics.shapes.Line;
 import fi.utu.tech.visualnotes.graphics.shapes.Oval;
 import fi.utu.tech.visualnotes.graphics.shapes.Rectangle;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
@@ -56,11 +55,11 @@ public class VisualNotesController {
     public Point2D offset = new Point2D(1,1);
     public Point2D drag;
     public Shape.ShapeType shapeType;
-    public Shape shape;
     public ShapeGraphRoot root = new ShapeGraphRoot();
     public ShapeGraphView view;
     public Optional<Shape> moving;
-    protected Collection<Shape> shapes = view.visibleShapes();
+    public Shape shape;
+    protected Collection<Shape> shapes;
 
     public static boolean getFill(){
         return fill;
@@ -72,7 +71,9 @@ public class VisualNotesController {
         System.out.println("initialize");
 
         view = new ShapeGraphView(root);
-        view.setView(10,10, canvas.getWidth(), canvas.getHeight());
+        view.setView(0,0, canvas.getWidth(), canvas.getHeight());
+
+        shapes = view.visibleShapes();
 
         graphicsContext = canvas.getGraphicsContext2D();
 
@@ -103,9 +104,10 @@ public class VisualNotesController {
         pointEnd = new Point2D(me.getX(), me.getY());
         if (muoto != null) {
             System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
-            Shape a = view.createShape(shapeType, color, pointStart, pointEnd);
-            root.add(a);
-            a.render(graphicsContext, offset);
+            shape = view.createShape(shapeType, color, pointStart, pointEnd);
+            root.add(shape);
+            shape.render(graphicsContext, view.offset());
+            shapes = view.visibleShapes();
             System.out.println("lisätty a " + shapes.size());
 
         }else {
@@ -114,20 +116,30 @@ public class VisualNotesController {
             double offY = pointEnd.y - pointStart.y;
             drag = new Point2D(offX, offY);
              */
-            //TODO tärkeys:1 - palikat jää näkyviin
+            //TODO tärkeys:1 - move kopioi ja siirtää
             System.out.println("mouse release else" + pointStart);
             moving = view.extractShape(pointStart);
             System.out.println("drag " + moving.isPresent());
             if (moving.isPresent()){
                 Shape s = moving.get();
+                root.remove(s);
                 System.out.println(s.toString());
+                System.out.println("moving ennen lis " + root.contents());
                 drag = new Point2D(pointStart.sub(pointEnd));
                 s.move(drag);
                 root.add(s);
                 s.render(graphicsContext, drag);
-                Collection<Shape> shapes = view.visibleShapes();
-                System.out.println("lisätty kopio " + shapes.size());
-                System.out.println("moving if drag on " + drag);
+                /*
+                Shape a = s.move(drag);
+                System.out.println("onko a hyva? " + a.toString());
+                root.add(a);
+                a.render(graphicsContext, drag);
+                 */
+                shapes = view.visibleShapes();
+                view.setView(0,0, canvas.getWidth(), canvas.getHeight());
+                //Collection<Shape> shapes = view.visibleShapes();
+                System.out.println("lisätty kopio " + root.contents());
+
             }
         }
 
