@@ -42,13 +42,7 @@ public class VisualNotesController {
     //g.setFill(colorPicker.getValue());
     Color color = Color.Blue;
 
-    //@FXML
-    //protected Line line;
-    protected Oval oval;
-    protected Rectangle rectangle;
     public static Boolean fill;
-    protected double startX;
-    protected double startY;
     public GraphicsContext graphicsContext;
     public Point2D pointStart;
     public Point2D pointEnd;
@@ -93,13 +87,13 @@ public class VisualNotesController {
 
     void mousePressed (MouseEvent me) {
 
-        System.out.println("if pressed " + me.getX() + me.getY() + " tai  " + me.getSceneX() + me.getSceneY());
+        //System.out.println("if pressed " + me.getX() + me.getY() + " tai  " + me.getSceneX() + me.getSceneY());
         pointStart = new Point2D(me.getX(), me.getY());
     }
 
     void mouseReleased (MouseEvent me) {
 
-        System.out.println("if released" + me.getX() + " " + me.getY());
+        //System.out.println("if released" + me.getX() + " " + me.getY());
         //gc.strokeLine(startX, startY, me.getSceneX(), me.getSceneY());
         pointEnd = new Point2D(me.getX(), me.getY());
         if (muoto != null) {
@@ -117,17 +111,30 @@ public class VisualNotesController {
             drag = new Point2D(offX, offY);
              */
             //TODO tärkeys:1 - move kopioi ja siirtää
-            System.out.println("mouse release else" + pointStart);
+            //TODO tärkeys:3 - keksi keino hakea liikutettavan muodon fill tai ota pois :(
+            /*
+                pitänee muokata kaikki luokat siten että fill on asetettuna itse kuvioon.
+             */
+            System.out.println("mouse release else " + pointStart);
             moving = view.extractShape(pointStart);
-            System.out.println("drag " + moving.isPresent());
+            //jos on muoto kohdassa
             if (moving.isPresent()){
+                //tallennetaan extractShapen palauttama muoto:
+                System.out.println("drag, onko kohdassa muoto? " + moving.isPresent());
+                //tehdään uusi shape joka hakee muodon
                 Shape s = moving.get();
+                //poistetaan rootista öööö vaikkei ole siellä vielä -- TÄÄ POIS?
                 root.remove(s);
+                //tsekki s
                 System.out.println(s.toString());
                 System.out.println("moving ennen lis " + root.contents());
+                //muuttuja drag saa arvon
                 drag = new Point2D(pointStart.sub(pointEnd));
+                //kutsutaan shape move, annetaan drag - jonka pitäisi palauttaa uusi muoto -- TÄSSÄ VIRHE
                 s.move(drag);
+                //lisätään s roottiin -- JOKA EI OO SIIRTYNYT -- TÄSSÄ VIRHE
                 root.add(s);
+                //renderöidään s JOKA EI OO MUUTTUNUT
                 s.render(graphicsContext, drag);
                 /*
                 Shape a = s.move(drag);
@@ -135,8 +142,8 @@ public class VisualNotesController {
                 root.add(a);
                 a.render(graphicsContext, drag);
                  */
-                shapes = view.visibleShapes();
-                view.setView(0,0, canvas.getWidth(), canvas.getHeight());
+                //shapes = view.visibleShapes();
+                //view.setView(0,0, canvas.getWidth(), canvas.getHeight());
                 //Collection<Shape> shapes = view.visibleShapes();
                 System.out.println("lisätty kopio " + root.contents());
 
@@ -145,11 +152,11 @@ public class VisualNotesController {
 
     }//released
 
-    //TODO pohdi tarvitaanko? tuleeko jokaiseen fxml muotoon?
+    //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
     public void handleDrag(MouseEvent mouseEvent) {
-        System.out.println("drag" +muoto);
+        //System.out.println("drag" +muoto);
         muoto = null;
-        System.out.println("drag" +muoto);
+        //System.out.println("drag" +muoto);
         canvas.setCursor(Cursor.MOVE);
     }
 /*
@@ -165,10 +172,13 @@ public class VisualNotesController {
 
     public void handleLoadClicked(MouseEvent mouseEvent) {
 
+        //TODO tärkeys: 1 - lataaminen
         System.out.println("load clicked");
     }
 
     public void handleSaveClicked(MouseEvent mouseEvent) {
+
+        //TODO tärkeys: 1 - tallennus
         try {
             Image snapshot = canvas.snapshot(null, null);
             ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "vin", new File("paint.png"));
@@ -195,37 +205,29 @@ public class VisualNotesController {
     }
 
     public void handleLine(MouseEvent mouseEvent) {
-        System.out.println("line");
+        //System.out.println("line");
         fill = true;
         muoto = Muoto.LINE;
         shapeType = Shape.ShapeType.Line;
-        System.out.println("line" + fill);
+        //System.out.println("line" + fill);
         canvas.setCursor(Cursor.DEFAULT);
     }
 
     public void handleSquareFilled(MouseEvent mouseEvent) {
-        System.out.println("squera filled before " + fill);
+        //System.out.println("squera filled before " + fill);
         fill = true;
         muoto = Muoto.SQUARE;
         shapeType = Shape.ShapeType.Rectangle;
-        System.out.println("squera filled after " + fill);
+        //System.out.println("squera filled after " + fill);
         canvas.setCursor(Cursor.DEFAULT);
     }
-/*
-    public void handleSquareMove(MouseEvent mouseEvent) {
-        System.out.println(drag);
-        rectangle.move(drag);
-        System.out.println("handle square move");
-    }
-
- */
 
     public void handleSquareStroke(MouseEvent mouseEvent) {
-        System.out.println("square stroke before " + fill);
+        //System.out.println("square stroke before " + fill);
         fill = false;
         muoto = Muoto.SQUARE;
         shapeType = Shape.ShapeType.Rectangle;
-        System.out.println("square stroke after " + fill);
+        //System.out.println("square stroke after " + fill);
         canvas.setCursor(Cursor.DEFAULT);
     }
 
