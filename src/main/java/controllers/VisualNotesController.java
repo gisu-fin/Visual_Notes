@@ -110,39 +110,52 @@ public class VisualNotesController {
             double offY = pointEnd.y - pointStart.y;
             drag = new Point2D(offX, offY);
              */
-            //TODO tärkeys:1 - move kopioi ja siirtää
+
             //TODO tärkeys:3 - keksi keino hakea liikutettavan muodon fill tai ota pois :(
             /*
                 pitänee muokata kaikki luokat siten että fill on asetettuna itse kuvioon.
              */
             System.out.println("mouse release else " + pointStart);
+            //tallennetaan extractShapen palauttama muoto:
             moving = view.extractShape(pointStart);
             //jos on muoto kohdassa
             if (moving.isPresent()){
-                //tallennetaan extractShapen palauttama muoto:
+
                 System.out.println("drag, onko kohdassa muoto? " + moving.isPresent());
+
+                //muuttuja drag saa arvon
+                drag = new Point2D(pointStart.sub(pointEnd));
+
                 //tehdään uusi shape joka hakee muodon
                 Shape s = moving.get();
+                //pyyhitään pois muoto
+                //TODO tärkeys 1 - miten ovaali pyyhitään pois rect avulla?
+                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, s.bottomRight().x, s.bottomRight().y);
+                /*
                 //poistetaan rootista öööö vaikkei ole siellä vielä -- TÄÄ POIS?
                 root.remove(s);
                 //tsekki s
                 System.out.println(s.toString());
                 System.out.println("moving ennen lis " + root.contents());
-                //muuttuja drag saa arvon
-                drag = new Point2D(pointStart.sub(pointEnd));
+
                 //kutsutaan shape move, annetaan drag - jonka pitäisi palauttaa uusi muoto -- TÄSSÄ VIRHE
                 s.move(drag);
                 //lisätään s roottiin -- JOKA EI OO SIIRTYNYT -- TÄSSÄ VIRHE
                 root.add(s);
                 //renderöidään s JOKA EI OO MUUTTUNUT
                 s.render(graphicsContext, drag);
-                /*
-                Shape a = s.move(drag);
-                System.out.println("onko a hyva? " + a.toString());
-                root.add(a);
-                a.render(graphicsContext, drag);
+
                  */
-                //shapes = view.visibleShapes();
+                //TODO MUISTILAPUKSI! TÄMÄ RATKAISU TOIMII!
+                //tallennetaan muotoon a moven palauttama muoto, lisätään ja renderöidään
+                Shape a = s.move(drag);
+                root.add(a);
+                //TODO korjaa offset pointti niin että piirtyy oikeaan kohtaan
+                //view.offset piirtyy mutta väärin !!!!!!
+                a.render(graphicsContext, view.offset());
+                shapes = view.visibleShapes();
+                System.out.println("lisätty a " + shapes.size());
+
                 //view.setView(0,0, canvas.getWidth(), canvas.getHeight());
                 //Collection<Shape> shapes = view.visibleShapes();
                 System.out.println("lisätty kopio " + root.contents());
