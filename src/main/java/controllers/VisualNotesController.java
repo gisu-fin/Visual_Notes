@@ -54,6 +54,8 @@ public class VisualNotesController {
     public Optional<Shape> moving;
     public Shape shape;
     protected Collection<Shape> shapes;
+    protected double height;
+    protected double width;
 
     public static boolean getFill(){
         return fill;
@@ -105,17 +107,12 @@ public class VisualNotesController {
             System.out.println("lisätty a " + shapes.size());
 
         }else {
-            /*
-            double offX = pointEnd.x - pointStart.x;
-            double offY = pointEnd.y - pointStart.y;
-            drag = new Point2D(offX, offY);
-             */
 
             //TODO tärkeys:3 - keksi keino hakea liikutettavan muodon fill tai ota pois :(
             /*
                 pitänee muokata kaikki luokat siten että fill on asetettuna itse kuvioon.
              */
-            System.out.println("mouse release else " + pointStart);
+            //System.out.println("mouse release else " + pointStart);
             //tallennetaan extractShapen palauttama muoto:
             moving = view.extractShape(pointStart);
             //jos on muoto kohdassa
@@ -124,13 +121,33 @@ public class VisualNotesController {
                 System.out.println("drag, onko kohdassa muoto? " + moving.isPresent());
 
                 //muuttuja drag saa arvon
-                drag = new Point2D(pointStart.sub(pointEnd));
+                //drag = new Point2D(pointStart.sub(pointEnd));
+                drag = new Point2D(pointEnd.sub(pointStart));
 
                 //tehdään uusi shape joka hakee muodon
                 Shape s = moving.get();
                 //pyyhitään pois muoto
-                //TODO tärkeys 1 - miten ovaali pyyhitään pois rect avulla?
-                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, s.bottomRight().x, s.bottomRight().y);
+                // TODO tärkeys 1 - poistaa myös muut kuviot canvakselta
+                // TODO tärkeys 1 - selvitä extract shapen avulla siirrettävän alueelta onko siinä muotoja,
+                //  jos on, tallenna uuteen muotoon, lisää roottiin ja renderöi uudelleen siirron jälkeen?
+                /* VAIHTOEHTOJA:
+                    1. canvas layer ajattelu? jos monia canvaksia niin mahdoton tietää missä canvaksessa sijaitsee jotain?
+                    2. koko canvas tyhjennys jonka jälkeen uusi piirto JOKAISELLE muodolle? onnistuuko niin nopeasti ettei huomaa?
+                    3. animaatio? onko sama ongelma kuin nyt?
+                    4. onko edes tarkoitus miettiä päällekkäisyyksien ongelmia?
+                 */
+
+
+                //TODO tärkeys 1 - ei oo ihan tarkka, onko laskussa pieni virhe? jää parin pikselin jäljet ylös ja alas.
+                height = s.bottomRight().y - s.topLeft().y;
+                width = s.bottomRight().x - s.topLeft().x;
+
+                System.out.println("mitkä arvot s on? " + s.topLeft() + " bottom " + s.bottomRight());
+                System.out.println("mitkä ovat start arvot? " + pointStart);
+                System.out.println("korkeus ja leveys: " + height + " " + width);
+                //eka x,y, sitten h,w
+                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width, height);
+
                 /*
                 //poistetaan rootista öööö vaikkei ole siellä vielä -- TÄÄ POIS?
                 root.remove(s);
@@ -146,15 +163,27 @@ public class VisualNotesController {
                 s.render(graphicsContext, drag);
 
                  */
-                //TODO MUISTILAPUKSI! TÄMÄ RATKAISU TOIMII!
+                //TÄMÄ RATKAISU TOIMII!
                 //tallennetaan muotoon a moven palauttama muoto, lisätään ja renderöidään
                 Shape a = s.move(drag);
                 root.add(a);
-                //TODO korjaa offset pointti niin että piirtyy oikeaan kohtaan
-                //view.offset piirtyy mutta väärin !!!!!!
+                //TODO tärkeys 1 - tutki tässä kohtaa s-alueen päällekkäiset muodot
+                /*
+                MUODOSTA METODI?
+                for silmukassa s.topleft +5 (tms) < s.topleft+leveys
+                for silmukassa s.topleft +5 (tms) < s.topleft+korkeus
+                    point2d saa arvot
+                    extractshape point2d
+                    if
+                        new shape
+                        root add
+                        render
+                tarkkana ettei muoto ns monistu vaan palauttaa oikeasti alueen muodon/muodot
+                vain kerran, ei voi siis lisätä silmukassa koska löytyy silloin aina uudelleen.
+                 */
                 a.render(graphicsContext, view.offset());
                 shapes = view.visibleShapes();
-                System.out.println("lisätty a " + shapes.size());
+                //System.out.println("lisätty a " + shapes.toArray());
 
                 //view.setView(0,0, canvas.getWidth(), canvas.getHeight());
                 //Collection<Shape> shapes = view.visibleShapes();

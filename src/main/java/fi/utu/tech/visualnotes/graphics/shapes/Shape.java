@@ -11,6 +11,7 @@ public abstract class Shape implements Region, Comparable<Shape> {
     public boolean focused = false;
     public boolean filled = false;
     private final Point2D topLeft, bottomRight;
+    //miksi ZZ ja Z? compare palauttaa z- o.z
     private static int zz;
     public final int z = zz++;
 
