@@ -21,17 +21,21 @@ public class Demo {
         // keep in mind that the shape is created relative
         // to the view's top left corner, so it is actually
         // located at (30,40) - (60,60)
+        /*
         Shape rect = view.createShape(
                 Shape.ShapeType.Rectangle,
                 Color.Blue,
                 new Point2D(20, 30),
                 new Point2D(50, 50));
 
+
+         */
         // add the rectangle to the shape graph
-        root.add(rect);
+        //root.add(rect);
 
         // list all visible shapes inside the view
         // that is, (10,10) - (510,510)
+        /*
         Collection<Shape> shapes = view.visibleShapes();
 
         // the view should contain our rectangle
@@ -47,5 +51,7 @@ public class Demo {
 
         // restore the graph from the file "test.vin"
         root.load(Paths.get("test.vin"));
+
+         */
     }
 }

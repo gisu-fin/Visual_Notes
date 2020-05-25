@@ -105,7 +105,7 @@ public class VisualNotesController {
         pointEnd = new Point2D(me.getX(), me.getY());
         if (muoto != null) {
             System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
-            shape = view.createShape(shapeType, color, pointStart, pointEnd);
+            shape = view.createShape(shapeType, fill, color, pointStart, pointEnd);
             root.add(shape);
             shape.render(graphicsContext, view.offset());
             shapes = view.visibleShapes();
@@ -172,21 +172,7 @@ public class VisualNotesController {
                 root.add(a);
                 shapes = view.visibleShapes();
                 drawAll();
-                //TODO tärkeys 1 - tutki tässä kohtaa s-alueen päällekkäiset muodot
-                /*
-                MUODOSTA METODI?
-                for silmukassa s.topleft +5 (tms) < s.topleft+leveys
-                for silmukassa s.topleft +5 (tms) < s.topleft+korkeus
-                    point2d saa arvot
-                    extractshape point2d
-                    if
-                        new shape
-                        root add
-                        render
-                tarkkana ettei muoto ns monistu vaan palauttaa oikeasti alueen muodon/muodot
-                vain kerran, ei voi siis lisätä silmukassa koska löytyy silloin aina uudelleen.
-                 */
-                a.render(graphicsContext, view.offset());
+                //a.render(graphicsContext, view.offset());
 
                 //System.out.println("lisätty a " + shapes.toArray());
 

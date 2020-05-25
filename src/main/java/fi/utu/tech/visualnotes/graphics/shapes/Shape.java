@@ -14,10 +14,12 @@ public abstract class Shape implements Region, Comparable<Shape> {
     //miksi ZZ ja Z? compare palauttaa z- o.z
     private static int zz;
     public final int z = zz++;
+    public boolean colorFill;
 
-    public Shape(Color color, Point2D p1, Point2D p2) {
+    public Shape(Color color, Boolean colorFill, Point2D p1, Point2D p2) {
         this.color = color == null ? Color.Black : color;
         if (color != null) filled = true;
+        this.colorFill = colorFill;
         this.topLeft = new Point2D(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y));
         this.bottomRight = new Point2D(Math.max(p1.x, p2.x), Math.max(p1.y, p2.y));
     }
@@ -51,14 +53,14 @@ public abstract class Shape implements Region, Comparable<Shape> {
 
     public enum ShapeType {Line, Oval, Rectangle}
 
-    public static Shape createShape(ShapeType type, Color color, Point2D p1, Point2D p2) {
+    public static Shape createShape(ShapeType type, Boolean colorFill, Color color, Point2D p1, Point2D p2) {
         switch (type) {
             case Line:
-                return new Line(color, p1, p2);
+                return new Line(color, colorFill, p1, p2);
             case Rectangle:
-                return new Rectangle(color, p1, p2);
+                return new Rectangle(color, colorFill, p1, p2);
             case Oval:
-                return new Oval(color, p1, p2);
+                return new Oval(color, colorFill, p1, p2);
         }
         return null;
     }

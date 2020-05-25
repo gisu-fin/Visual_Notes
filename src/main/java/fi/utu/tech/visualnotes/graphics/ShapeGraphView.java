@@ -61,7 +61,7 @@ public class ShapeGraphView {
         return Optional.of(ret);
     }
 
-    public Shape createShape(Shape.ShapeType type, Color color, Point2D topLeft, Point2D bottomRight) {
-        return Shape.createShape(type, color, view.topLeft().copy().add(topLeft), view.topLeft().copy().add(bottomRight));
+    public Shape createShape(Shape.ShapeType type, Boolean colorFill, Color color, Point2D topLeft, Point2D bottomRight) {
+        return Shape.createShape(type, colorFill, color, view.topLeft().copy().add(topLeft), view.topLeft().copy().add(bottomRight));
     }
 }
