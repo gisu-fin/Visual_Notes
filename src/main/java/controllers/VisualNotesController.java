@@ -17,9 +17,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import scalafx.scene.input.KeyCode;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -60,6 +63,8 @@ public class VisualNotesController {
     public static boolean getFill(){
         return fill;
     }
+
+    //TODO tärkeys 1: älä unohda spatiaalisen rakenteen näkymän vieritystä
 
     @FXML
     public void initialize(){
@@ -137,8 +142,6 @@ public class VisualNotesController {
                     4. onko edes tarkoitus miettiä päällekkäisyyksien ongelmia?
                  */
 
-
-                //TODO tärkeys 1 - ei oo ihan tarkka, onko laskussa pieni virhe? jää parin pikselin jäljet ylös ja alas.
                 height = s.bottomRight().y - s.topLeft().y;
                 width = s.bottomRight().x - s.topLeft().x;
 
@@ -146,7 +149,7 @@ public class VisualNotesController {
                 System.out.println("mitkä ovat start arvot? " + pointStart);
                 System.out.println("korkeus ja leveys: " + height + " " + width);
                 //eka x,y, sitten h,w
-                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width, height);
+                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width+1, height+1);
 
                 /*
                 //poistetaan rootista öööö vaikkei ole siellä vielä -- TÄÄ POIS?
@@ -167,6 +170,8 @@ public class VisualNotesController {
                 //tallennetaan muotoon a moven palauttama muoto, lisätään ja renderöidään
                 Shape a = s.move(drag);
                 root.add(a);
+                shapes = view.visibleShapes();
+                drawAll();
                 //TODO tärkeys 1 - tutki tässä kohtaa s-alueen päällekkäiset muodot
                 /*
                 MUODOSTA METODI?
@@ -182,7 +187,7 @@ public class VisualNotesController {
                 vain kerran, ei voi siis lisätä silmukassa koska löytyy silloin aina uudelleen.
                  */
                 a.render(graphicsContext, view.offset());
-                shapes = view.visibleShapes();
+
                 //System.out.println("lisätty a " + shapes.toArray());
 
                 //view.setView(0,0, canvas.getWidth(), canvas.getHeight());
@@ -193,6 +198,12 @@ public class VisualNotesController {
         }
 
     }//released
+
+    public void drawAll () {
+        for (Shape s: shapes){
+            s.render(graphicsContext, view.offset());
+        }
+    }
 
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
     public void handleDrag(MouseEvent mouseEvent) {
@@ -212,22 +223,45 @@ public class VisualNotesController {
     }
     */
 
-    public void handleLoadClicked(MouseEvent mouseEvent) {
+    public void handleLoadClicked(ActionEvent actionEvent) {
 
         //TODO tärkeys: 1 - lataaminen
+        //file chooser!
         System.out.println("load clicked");
+        try {
+            root.load(Paths.get("test.vin"));
+            shapes = view.visibleShapes();
+            drawAll();
+        }
+        catch (Exception e) {
+            System.out.println("load failed " + e.getMessage());
+        }
+
+
     }
 
-    public void handleSaveClicked(MouseEvent mouseEvent) {
+    public void handleSaveClicked(ActionEvent actionEvent) {
 
         //TODO tärkeys: 1 - tallennus
+        //filechooser
+        System.out.println("savessa");
+
         try {
+            /*
             Image snapshot = canvas.snapshot(null, null);
             ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "vin", new File("paint.png"));
             System.out.println("saved");
+
+
+             */
+
+            root.save(Paths.get("test.vin"));
+
         }catch (Exception e){
             System.out.println("save failed");
         }
+
+
     }//handle save
 
     public void handleExit () {
