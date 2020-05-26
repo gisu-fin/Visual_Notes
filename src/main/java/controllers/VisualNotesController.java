@@ -5,7 +5,6 @@ import fi.utu.tech.visualnotes.graphics.Color;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Oval;
-import fi.utu.tech.visualnotes.graphics.shapes.Rectangle;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
@@ -20,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import scalafx.scene.input.KeyCode;
 
@@ -28,17 +28,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class VisualNotesController {
 
-    @FXML
-    public Canvas animationCanvas;
 
     @FXML
     private Canvas canvas;
-
-
 
     @FXML
     private ColorPicker colorPicker;
@@ -58,18 +55,15 @@ public class VisualNotesController {
     public GraphicsContext graphicsContext;
     public Point2D pointStart;
     public Point2D pointEnd;
-    public Point2D pointNow;
-    public Point2D offset = new Point2D(1,1);
     public Point2D drag;
     public Shape.ShapeType shapeType;
     public ShapeGraphRoot root = new ShapeGraphRoot();
     public ShapeGraphView view;
     public Optional<Shape> moving;
-    public Shape shape;
+    protected Shape shape;
     protected Collection<Shape> shapes;
     protected double height;
     protected double width;
-    protected Popup popup = new Popup();
 
     public static boolean getFill(){
         return fill;
@@ -82,7 +76,6 @@ public class VisualNotesController {
     //POPUP? listaan palloja missä värit?
 
     //TODO tärkeys 1: asynkroonisuus tallennus ja lataus
-
 
     //TODO tärkeys 2: lisää kuvakkeille tooltip tekstit!
 
@@ -99,10 +92,6 @@ public class VisualNotesController {
         shapes = view.visibleShapes();
 
         graphicsContext = canvas.getGraphicsContext2D();
-
-        //canvas.setOnMousePressed(this::mousePressed);
-        //canvas.setOnMouseReleased(this::mouseReleased);
-        //canvas.setOnMouseDragged(this::mouseDragged);
 
     } //init
 
@@ -133,12 +122,11 @@ public class VisualNotesController {
             System.out.println("mouse release else " + pointStart);
 
             //tallennetaan extractShapen palauttama muoto:
-            //moving = view.extractShape(pointStart);
+            moving = view.extractShape(pointStart);
             //jos on muoto kohdassa
             if (moving.isPresent()){
 
                 //System.out.println("drag, onko kohdassa muoto? " + moving.isPresent());
-
                 //muuttuja drag saa arvon
                 drag = new Point2D(pointEnd.sub(pointStart));
 
@@ -148,90 +136,36 @@ public class VisualNotesController {
                 height = s.bottomRight().y - s.topLeft().y;
                 width = s.bottomRight().x - s.topLeft().x;
 
-                //System.out.println("mitkä arvot s on? " + s.topLeft() + " bottom " + s.bottomRight());
-                //System.out.println("mitkä ovat start arvot? " + pointStart);
-                //System.out.println("korkeus ja leveys: " + height + " " + width);
-
-                //pyyhitään alue jolla muoto oli
-                graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width+1, height+1);
-
                 //tallennetaan muotoon a moven palauttama muoto, lisätään ja renderöidään
                 Shape a = s.move(drag);
                 root.add(a);
                 shapes = view.visibleShapes();
+
+                //pyyhitään alue jolla muoto oli
+                //graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width+1, height+1);
+
+                //pyyhitään kaikki
+                graphicsContext.clearRect(0,0, canvas.getHeight(), canvas.getWidth());
                 drawAll();
-                canvas.toFront();
+
                 //a.render(graphicsContext, view.offset());
                 //System.out.println("lisätty a " + shapes.toArray());
 
-                //System.out.println("lisätty kopio " + root.contents());
-
+                System.out.println("lisätty a, shapes pituus " + shapes.size());
 
             }
-
 
         }
 
     }//released
 
-    //TODO jos tarkoitus että muoto siirtyy hiiren mukana niin selvitä tähän animaatio tms juttu jonka avulla siirto onnistuu.
+    //TODO tärkeys:3 - muoto ei katoa kun siirretään
     //muodon ei tarvitse mennä roottiin ennen kuin hiiri pysähtyy!
-    //Selvitä paras ratkaisu
+    //Selvitä paras ratkaisu: säikeet? animaatio? mikä muu?
     @FXML
     public void mouseDragged(MouseEvent me) {
         //System.out.println("mouse drag event");
 
-        pointNow = new Point2D(me.getX(), me.getY());
-        moving = view.extractShape(pointStart);
-        //jos on muoto kohdassa
-        if (moving.isPresent()) {
-
-            //System.out.println("drag, onko kohdassa muoto? " + moving.isPresent());
-
-            //muuttuja drag saa arvon
-            drag = new Point2D(pointNow.sub(pointStart));
-
-            //tehdään uusi shape joka hakee muodon
-            Shape s = moving.get();
-
-            //lasketaan korkeus ja leveys
-            height = s.bottomRight().y - s.topLeft().y;
-            width = s.bottomRight().x - s.topLeft().x;
-
-            //luodaan uusi canvas animointia varten
-            animationCanvas = new Canvas(height, width);
-            GraphicsContext animate = animationCanvas.getGraphicsContext2D();
-            animationCanvas.toFront();
-
-            animate.setFill(javafx.scene.paint.Color.BLUEVIOLET);
-            animate.fillRect(50, 50, 50, 50);
-            //s.render(animate,view.offset());
-            //System.out.println("mitkä arvot s on? " + s.topLeft() + " bottom " + s.bottomRight());
-            //System.out.println("mitkä ovat start arvot? " + pointStart);
-            //System.out.println("korkeus ja leveys: " + height + " " + width);
-
-            //pyyhitään alue jolla muoto oli
-            graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width + 1, height + 1);
-
-            //animaation pitäisi toimia.
-            animationCanvas.setOnMouseDragged(e -> {
-                double offsetX = me.getSceneX() - animationCanvas.getTranslateX() - animationCanvas.getWidth() / 2;
-                animationCanvas.setTranslateX(animationCanvas.getTranslateX() + offsetX);
-            });
-
-
-            //tallennetaan muotoon a moven palauttama muoto, lisätään ja renderöidään
-            Shape a = s.move(drag);
-            root.add(a);
-            shapes = view.visibleShapes();
-            drawAll();
-            //a.render(graphicsContext, view.offset());
-            //System.out.println("lisätty a " + shapes.toArray());
-
-            //System.out.println("lisätty kopio " + root.contents());
-
-
-        }
 
     }
 
@@ -306,15 +240,8 @@ public class VisualNotesController {
 
     public void handleColor(MouseEvent mouseEvent) {
         System.out.println("handle color");
-        createPopup();
 
-    }
 
-    public void createPopup () {
-        System.out.println("create popup");
-        Label label = new Label("Pick a color");
-        popup.getContent().add(label);
-        popup.setAutoHide(true);
     }
 
     public void handleLine(MouseEvent mouseEvent) {
