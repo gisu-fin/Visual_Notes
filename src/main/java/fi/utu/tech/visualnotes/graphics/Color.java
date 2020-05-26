@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-//TODO Tärkeys: 3 - vaihda colorpickeriin jos vain millään mahdollista
 public enum Color implements Serializable {
     Red, Blue, Green, Yellow, Orange, Black, White;
 

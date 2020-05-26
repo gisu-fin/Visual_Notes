@@ -7,22 +7,29 @@ import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Oval;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Popup;
 import scalafx.scene.input.KeyCode;
-
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +45,10 @@ public class VisualNotesController {
     private Canvas canvas;
 
     @FXML
-    private ColorPicker colorPicker;
+    private Rectangle selectedColor;
+
+    @FXML
+    private ChoiceBox<String> colorbox;
 
     private enum Muoto {
         LINE,
@@ -49,7 +59,7 @@ public class VisualNotesController {
     Muoto muoto;
 
     //g.setFill(colorPicker.getValue());
-    Color color = Color.Blue;
+
 
     public static Boolean fill;
     public GraphicsContext graphicsContext;
@@ -64,10 +74,14 @@ public class VisualNotesController {
     protected Collection<Shape> shapes;
     protected double height;
     protected double width;
+    protected Color color;
 
     public static boolean getFill(){
         return fill;
     }
+
+    ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
+
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
@@ -85,6 +99,17 @@ public class VisualNotesController {
     public void initialize(){
 
         System.out.println("initialize");
+        //color = Color.Black;
+        //colorbox.setValue("Black");
+        colorbox.setItems(colorList);
+        //colorbox.getItems().setAll(Color.values());
+
+        colorbox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
+            System.out.println(newValue);
+            //valitaan väri
+            color = Color.valueOf(newValue);
+            selectedColor.setFill(color.toFx());
+        });
 
         view = new ShapeGraphView(root);
         view.setView(0,0, canvas.getWidth(), canvas.getHeight());
@@ -93,8 +118,20 @@ public class VisualNotesController {
 
         graphicsContext = canvas.getGraphicsContext2D();
 
+
     } //init
 
+    public void handleColor(ContextMenuEvent contextMenuEvent) {
+        System.out.println("handle color");
+
+        System.out.println(contextMenuEvent.getPickResult());
+        System.out.println("color name " + color.name());
+        System.out.println("colorbox value " + colorbox.getValue());
+        //valitaan väri
+        color = Color.valueOf(colorbox.getValue());
+        //näytetään valittu väri
+        selectedColor.setFill(color.toFx());
+    }
 
     @FXML
     void mousePressed (MouseEvent me) {
@@ -236,12 +273,6 @@ public class VisualNotesController {
 
     public void handleAbout(ActionEvent actionEvent) {
         System.out.println("Harjoitustyö D - Mirva Tapola");
-    }
-
-    public void handleColor(MouseEvent mouseEvent) {
-        System.out.println("handle color");
-
-
     }
 
     public void handleLine(MouseEvent mouseEvent) {
