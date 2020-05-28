@@ -1,6 +1,7 @@
 package controllers;
 
 import fi.utu.tech.graphics.Point2D;
+import fi.utu.tech.visualnotes.Main;
 import fi.utu.tech.visualnotes.graphics.Color;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
@@ -14,10 +15,16 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
@@ -25,6 +32,8 @@ import java.util.Optional;
 public class VisualNotesController {
 
 
+    public MenuItem save;
+    public MenuBar menu;
     @FXML
     private Canvas canvas;
 
@@ -49,6 +58,8 @@ public class VisualNotesController {
     protected double width;
     protected Color color;
     protected ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
+    private FileChooser fileChooser = new FileChooser();
+
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
@@ -80,6 +91,11 @@ public class VisualNotesController {
         view.setView(0,0, canvas.getWidth(), canvas.getHeight());
         shapes = view.visibleShapes();
         graphicsContext = canvas.getGraphicsContext2D();
+
+        //filechooser C - temp
+        fileChooser.setInitialDirectory(new File("C:\\"));
+
+
 
     } //init
 
@@ -144,7 +160,8 @@ public class VisualNotesController {
                 //graphicsContext.clearRect(s.topLeft().x, s.topLeft().y, width+1, height+1);
 
                 //pyyhitään kaikki
-                graphicsContext.clearRect(0,0, canvas.getHeight(), canvas.getWidth());
+                clearCanvas();
+
                 drawAll();
 
                 //a.render(graphicsContext, view.offset());
@@ -157,6 +174,12 @@ public class VisualNotesController {
         }
 
     }//released
+
+    protected void clearCanvas () {
+        graphicsContext.clearRect(0,0, canvas.getHeight(), canvas.getWidth());
+    }
+
+
 
     //TODO tärkeys:3 - muoto ei katoa kun siirretään
     //muodon ei tarvitse mennä roottiin ennen kuin hiiri pysähtyy!
@@ -177,41 +200,70 @@ public class VisualNotesController {
 
     public void handleLoadClicked(ActionEvent actionEvent) {
 
-        //TODO tärkeys: 1 - lataaminen: tiedoston valinta
-        //file chooser!
         System.out.println("load clicked");
-        try {
-            root.load(Paths.get("test.vin"));
-            shapes = view.visibleShapes();
-            drawAll();
-        }
-        catch (Exception e) {
-            System.out.println("load failed " + e.getMessage());
-        }
+
+        Window stage = this.menu.getScene().getWindow();
+        fileChooser.setTitle("Load file");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("vin files", "*.vin")
+        );
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null){
+            File loadfile = file.getParentFile();
+            fileChooser.setInitialDirectory(loadfile);
+            String name = file.getName();
+            String[] n = name.split("\\.");
+            if (!n[0].isEmpty()) { //&& shapes.size() == 0
+                try {
+                    /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
+                        vahinkoklikkaus voi aiheuttaa työn katoamisen
+                        anna tilaisuus peruttaa lataus ja tallentaa aiempi työ?
+                        alert missä kyllä ja peruuta?
+                        miten peruutus toimii käytännössä?
+                     */
+                    root.clear();
+                    clearCanvas();
+                    root.load(Paths.get(file.getAbsolutePath()));
+                    shapes = view.visibleShapes();
+                    drawAll();
+                }
+                catch (Exception e) {
+                    System.out.println("load failed " + e.getMessage());
+                }
+            }
+            }
 
     }
 
     public void handleSaveClicked(ActionEvent actionEvent) {
 
-        //TODO tärkeys: 1 - tallennus: tiedoston valinta
-        //filechooser
         System.out.println("savessa");
 
-        try {
-            /*
-            Image snapshot = canvas.snapshot(null, null);
-            ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "vin", new File("paint.png"));
-            System.out.println("saved");
-             */
-
-            root.save(Paths.get("test.vin"));
-
-        }catch (Exception e){
-            System.out.println("save failed");
+        Window stage = menu.getScene().getWindow(); //get a handle to the stage
+        fileChooser.setTitle("Save File"); //set the title of the Dialog window
+        String defaultSaveName = "mySave";
+        fileChooser.setInitialFileName(defaultSaveName); //set the default name for file to be saved
+        //create extension filters. The choice will be appended to the end of the file name
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("vin Files", "*.vin"));
+        try
+        {
+            //Actually displays the save dialog
+            File file = fileChooser.showSaveDialog(stage);
+            if (file != null)
+            {
+                File dir = file.getParentFile();//gets the selected directory
+                //update the file chooser directory to user selected so the choice is "remembered"
+                fileChooser.setInitialDirectory(dir);
+                System.out.println("save: " + file.getAbsolutePath());
+                System.out.println("save paths.get: " + file.getName());
+                root.save(Paths.get(file.getAbsolutePath()));
+            }
+        } catch (Exception e) {
+            System.out.println("save failed: " + e.getMessage());
         }
 
-
-    }//handle save
+    } //handle save
 
     public void handleExit () {
         Platform.exit();
