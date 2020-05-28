@@ -75,17 +75,18 @@ public class VisualNotesController {
     protected double height;
     protected double width;
     protected Color color;
+    protected ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
 
     public static boolean getFill(){
         return fill;
     }
 
-    ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
+
 
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
-    //TODO tärkeys 1: värin valinta
+    //TODO tärkeys 3: värin valinta - kauniimmaksi
 
     //POPUP? listaan palloja missä värit?
 
@@ -99,25 +100,20 @@ public class VisualNotesController {
     public void initialize(){
 
         System.out.println("initialize");
-        //color = Color.Black;
-        //colorbox.setValue("Black");
+        // lisätään värit
         colorbox.setItems(colorList);
-        //colorbox.getItems().setAll(Color.values());
+        // asetetaan musta oletukseksi näkyviin jotta käytettävyys paranee
+        colorbox.setValue("Black");
+        //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
+        setColor("Black");
 
-        colorbox.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
-            System.out.println(newValue);
-            //valitaan väri
-            color = Color.valueOf(newValue);
-            selectedColor.setFill(color.toFx());
-        });
+        // laitetaan colorbox kuuntelemaan valintoja
+        colorBoxListener();
 
         view = new ShapeGraphView(root);
         view.setView(0,0, canvas.getWidth(), canvas.getHeight());
-
         shapes = view.visibleShapes();
-
         graphicsContext = canvas.getGraphicsContext2D();
-
 
     } //init
 
@@ -206,11 +202,6 @@ public class VisualNotesController {
 
     }
 
-    public void drawAll () {
-        for (Shape s: shapes){
-            s.render(graphicsContext, view.offset());
-        }
-    }
 
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
     public void handleMoveClicked(MouseEvent mouseEvent) {
@@ -314,6 +305,30 @@ public class VisualNotesController {
         muoto = Muoto.CIRCLE;
         shapeType = Shape.ShapeType.Oval;
         canvas.setCursor(Cursor.DEFAULT);
+    }
+
+    //vähentää rivejä
+    protected void setColor (String newColor) {
+        color = Color.valueOf(newColor);
+        selectedColor.setFill(color.toFx());
+    }
+
+    // siirto initistä selkeyden vuoksi
+    protected void colorBoxListener () {
+        colorbox.getSelectionModel().selectedItemProperty().addListener((v, oldColor, newColor) -> {
+            System.out.println(newColor);
+            //valitaan väri
+            setColor(newColor);
+            //color = Color.valueOf(newValue);
+            //selectedColor.setFill(color.toFx());
+        });
+    }
+
+    //piirtää kaikki
+    private void drawAll () {
+        for (Shape s: shapes){
+            s.render(graphicsContext, view.offset());
+        }
     }
 
 }
