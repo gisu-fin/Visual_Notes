@@ -45,7 +45,7 @@ public abstract class Shape implements Region, Comparable<Shape> {
     public void render(GraphicsContext context, Point2D offset) {
         javafx.scene.paint.Color c = focused ? color.toFx().invert() : color.toFx();
         //System.out.println(VisualNotesController.getFill());
-        if (VisualNotesController.getFill()) {
+        if (this.colorFill) {
             context.setFill(c);
         }
         context.setStroke(c);
