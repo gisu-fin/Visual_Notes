@@ -9,6 +9,7 @@ import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
@@ -24,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -67,7 +69,7 @@ public class VisualNotesController {
 
     //POPUP? listaan palloja missä värit?
 
-    //TODO tärkeys 1: asynkroonisuus tallennus ja lataus
+    //TODO tärkeys 1: asynkroonisuus tallennus ja lataus keksi tapa testata toimivatko oikeasti
 
     //TODO tärkeys 2: lisää kuvakkeille tooltip tekstit!
 
@@ -214,26 +216,49 @@ public class VisualNotesController {
             String name = file.getName();
             String[] n = name.split("\\.");
             if (!n[0].isEmpty()) { //&& shapes.size() == 0
-                try {
-                    /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
+                new Thread(() -> {
+                    try {
+                        /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
                         vahinkoklikkaus voi aiheuttaa työn katoamisen
                         anna tilaisuus peruttaa lataus ja tallentaa aiempi työ?
                         alert missä kyllä ja peruuta?
                         miten peruutus toimii käytännössä?
                      */
-                    root.clear();
-                    clearCanvas();
-                    root.load(Paths.get(file.getAbsolutePath()));
-                    shapes = view.visibleShapes();
-                    drawAll();
-                }
-                catch (Exception e) {
-                    System.out.println("load failed " + e.getMessage());
-                }
+                        /*
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                root.clear();
+                                clearCanvas();
+                            }
+                        });
+                         */
+                        root.clear();
+                        clearCanvas();
+                        root.load(Paths.get(file.getAbsolutePath()));
+                        shapes = view.visibleShapes();
+                        drawAll();
+                        /*
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                drawAll();
+                            }
+                        });
+
+                         */
+
+                        System.out.println("load run try");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("load failed " + e.getMessage());
+                    }
+                }).start();
             }
             }
 
     }
+
 
     public void handleSaveClicked(ActionEvent actionEvent) {
 
@@ -246,18 +271,26 @@ public class VisualNotesController {
         //create extension filters. The choice will be appended to the end of the file name
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("vin Files", "*.vin"));
-        try
-        {
+        try {
             //Actually displays the save dialog
             File file = fileChooser.showSaveDialog(stage);
-            if (file != null)
-            {
+            if (file != null) {
                 File dir = file.getParentFile();//gets the selected directory
                 //update the file chooser directory to user selected so the choice is "remembered"
                 fileChooser.setInitialDirectory(dir);
                 System.out.println("save: " + file.getAbsolutePath());
                 System.out.println("save paths.get: " + file.getName());
-                root.save(Paths.get(file.getAbsolutePath()));
+
+                //TODO selvitä toimiiko oikeasti
+                new Thread(() -> {
+                    try {
+                        root.save(Paths.get(file.getAbsolutePath()));
+                        System.out.println("run try");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
             }
         } catch (Exception e) {
             System.out.println("save failed: " + e.getMessage());
