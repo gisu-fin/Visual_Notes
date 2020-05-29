@@ -7,6 +7,8 @@ import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -18,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
@@ -36,6 +39,7 @@ public class VisualNotesController {
 
     public MenuItem save;
     public MenuBar menu;
+    public final ScrollBar scrollBar = new ScrollBar();
     @FXML
     private Canvas canvas;
 
@@ -61,15 +65,13 @@ public class VisualNotesController {
     protected Color color;
     protected ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
     private FileChooser fileChooser = new FileChooser();
-
+    private File file = null;
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
     //TODO tärkeys 3: värin valinta - kauniimmaksi
 
     //POPUP? listaan palloja missä värit?
-
-    //TODO tärkeys 1: asynkroonisuus tallennus ja lataus keksi tapa testata toimivatko oikeasti
 
     //TODO tärkeys 2: lisää kuvakkeille tooltip tekstit!
 
@@ -94,7 +96,7 @@ public class VisualNotesController {
         shapes = view.visibleShapes();
         graphicsContext = canvas.getGraphicsContext2D();
 
-        //filechooser C - temp
+        //filechooser C:n juureen
         fileChooser.setInitialDirectory(new File("C:\\"));
 
 
@@ -200,6 +202,12 @@ public class VisualNotesController {
         canvas.setCursor(Cursor.MOVE);
     }
 
+    /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
+                        vahinkoklikkaus voi aiheuttaa työn katoamisen
+                        anna tilaisuus peruttaa lataus ja tallentaa aiempi työ?
+                        alert missä kyllä ja peruuta?
+                        miten peruutus toimii käytännössä?
+                     */
     public void handleLoadClicked(ActionEvent actionEvent) {
 
         System.out.println("load clicked");
@@ -211,59 +219,48 @@ public class VisualNotesController {
         );
         File file = fileChooser.showOpenDialog(stage);
         if (file != null){
+            root.clear();
+            clearCanvas();
             File loadfile = file.getParentFile();
             fileChooser.setInitialDirectory(loadfile);
             String name = file.getName();
             String[] n = name.split("\\.");
             if (!n[0].isEmpty()) { //&& shapes.size() == 0
                 new Thread(() -> {
+
                     try {
-                        /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
-                        vahinkoklikkaus voi aiheuttaa työn katoamisen
-                        anna tilaisuus peruttaa lataus ja tallentaa aiempi työ?
-                        alert missä kyllä ja peruuta?
-                        miten peruutus toimii käytännössä?
-                     */
-                        /*
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                root.clear();
-                                clearCanvas();
-                            }
-                        });
-                         */
-                        root.clear();
-                        clearCanvas();
                         root.load(Paths.get(file.getAbsolutePath()));
-                        shapes = view.visibleShapes();
-                        drawAll();
-                        /*
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                drawAll();
-                            }
-                        });
-
-                         */
-
-                        System.out.println("load run try");
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("load failed " + e.getMessage());
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+                        Platform.runLater(() -> {
+                            shapes = view.visibleShapes();
+                            drawAll();
+                        });
+
+                        System.out.println("load run try");
+
                 }).start();
             }
             }
 
     }
 
+    Task <Void> saves = new Task<Void>() {
+        @Override
+        protected Void call() throws Exception {
+            root.save(Paths.get(file.getAbsolutePath()));
+            System.out.println("save task");
+            return null;
+        }
+    };
 
     public void handleSaveClicked(ActionEvent actionEvent) {
 
         System.out.println("savessa");
-
         Window stage = menu.getScene().getWindow(); //get a handle to the stage
         fileChooser.setTitle("Save File"); //set the title of the Dialog window
         String defaultSaveName = "mySave";
@@ -273,7 +270,7 @@ public class VisualNotesController {
                 new FileChooser.ExtensionFilter("vin Files", "*.vin"));
         try {
             //Actually displays the save dialog
-            File file = fileChooser.showSaveDialog(stage);
+            file = fileChooser.showSaveDialog(stage);
             if (file != null) {
                 File dir = file.getParentFile();//gets the selected directory
                 //update the file chooser directory to user selected so the choice is "remembered"
@@ -281,22 +278,34 @@ public class VisualNotesController {
                 System.out.println("save: " + file.getAbsolutePath());
                 System.out.println("save paths.get: " + file.getName());
 
-                //TODO selvitä toimiiko oikeasti
+                Thread th = new Thread(saves);
+                th.setDaemon(true);
+                th.start();
+                //jäätymistestiä varten
+                //root.save(Paths.get(file.getAbsolutePath()));
+
+                /*
                 new Thread(() -> {
                     try {
                         root.save(Paths.get(file.getAbsolutePath()));
                         System.out.println("run try");
-                    } catch (IOException e) {
+                    } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 }).start();
+
+                 */
 
             }
         } catch (Exception e) {
             System.out.println("save failed: " + e.getMessage());
         }
 
+
+
     } //handle save
+
+
 
     public void handleExit () {
         Platform.exit();
