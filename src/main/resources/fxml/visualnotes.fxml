@@ -159,7 +159,7 @@
                               <Point3D />
                            </rotationAxis>
                            <graphic>
-                              <Circle fx:id="colorball" radius="24.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="colorBall" radius="24.0" stroke="BLACK" strokeType="INSIDE" />
                            </graphic>
                            <tooltip>
                               <Tooltip text="Big ball displays the chosen color, click a small ball to change the color" />

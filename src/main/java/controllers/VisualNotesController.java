@@ -1,14 +1,11 @@
 package controllers;
 
 import fi.utu.tech.graphics.Point2D;
-import fi.utu.tech.visualnotes.Main;
 import fi.utu.tech.visualnotes.graphics.Color;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -18,17 +15,13 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
@@ -38,7 +31,7 @@ public class VisualNotesController {
 
     public MenuItem save;
     public MenuBar menu;
-    public Circle colorball;
+    public Circle colorBall;
     public ScrollPane scrollPane;
 
     @FXML
@@ -88,19 +81,19 @@ public class VisualNotesController {
 
         scrollPane.setContent(canvas);
 
-        System.out.println("scrollpane " + scrollPane.vvalueProperty());
+        //System.out.println("scrollpane " + scrollPane.vvalueProperty());
 
         //travitsee lisää säätöä, toimii jotenkin
         scrollPane.vvalueProperty().addListener((observableValue, oldValue, newValue) -> {
             //viewX + newValue;
             double apu = (Double)newValue - (Double)oldValue;
-            System.out.println("Apu " + apu);
+            //System.out.println("Apu " + apu);
             apu = apu * 10;
             //viewX = viewX + apu;
             viewY = viewY + apu;
             view.setView(viewX, viewY, canvas.getWidth(), canvas.getHeight());
-            System.out.println("scrollpane bounds " + scrollPane.getViewportBounds());
-            System.out.println("scroll v value " + scrollPane.vvalueProperty());
+            //System.out.println("scrollpane bounds " + scrollPane.getViewportBounds());
+            //System.out.println("scroll v value " + scrollPane.vvalueProperty());
             shapes = view.visibleShapes();
             clearCanvas();
             drawAll();
@@ -128,7 +121,7 @@ public class VisualNotesController {
         //gc.strokeLine(startX, startY, me.getSceneX(), me.getSceneY());
         pointEnd = new Point2D(me.getX(), me.getY());
         if (shapeType != null) {
-            System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
+            //System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
             shape = view.createShape(shapeType, fill, color, pointStart, pointEnd);
             root.add(shape);
             shape.render(graphicsContext, view.offset());
@@ -167,10 +160,7 @@ public class VisualNotesController {
 
                 drawAll();
 
-                //a.render(graphicsContext, view.offset());
-                //System.out.println("lisätty a " + shapes.toArray());
-
-                System.out.println("lisätty a, shapes pituus " + shapes.size());
+                //System.out.println("lisätty a, shapes pituus " + shapes.size());
 
             }
 
@@ -181,7 +171,6 @@ public class VisualNotesController {
     protected void clearCanvas () {
         graphicsContext.clearRect(0,0, canvas.getHeight(), canvas.getWidth());
     }
-
 
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
     public void handleMoveClicked(MouseEvent mouseEvent) {
@@ -266,8 +255,8 @@ public class VisualNotesController {
                 File dir = file.getParentFile();//gets the selected directory
                 //update the file chooser directory to user selected so the choice is "remembered"
                 fileChooser.setInitialDirectory(dir);
-                System.out.println("save: " + file.getAbsolutePath());
-                System.out.println("save paths.get: " + file.getName());
+                //System.out.println("save: " + file.getAbsolutePath());
+                //System.out.println("save paths.get: " + file.getName());
 
                 Thread th = new Thread(saves);
                 th.setDaemon(true);
@@ -279,7 +268,6 @@ public class VisualNotesController {
         } catch (Exception e) {
             System.out.println("save failed: " + e.getMessage());
         }
-
 
     } //handle save
 
@@ -294,11 +282,6 @@ public class VisualNotesController {
         System.out.println("handle reset");
         root.clear();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-    }
-
-
-    public void handleAbout(ActionEvent actionEvent) {
-        System.out.println("Harjoitustyö D - Mirva Tapola");
     }
 
     public void handleLine(MouseEvent mouseEvent) {
@@ -335,7 +318,7 @@ public class VisualNotesController {
     protected void setColor (String newColor) {
         color = Color.valueOf(newColor);
         //selectedColor.setFill(color.toFx());
-        colorball.setFill(color.toFx());
+        colorBall.setFill(color.toFx());
     }
 
     /*
@@ -363,9 +346,6 @@ public class VisualNotesController {
         String colorId = mouseEvent.getPickResult().getIntersectedNode().getId();
         System.out.println(colorId);
         setColor(colorId);
-    }
-
-    public void handleScroll(ScrollEvent scrollEvent) {
     }
 
         /*
