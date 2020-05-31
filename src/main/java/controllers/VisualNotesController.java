@@ -20,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -37,18 +38,11 @@ public class VisualNotesController {
 
     public MenuItem save;
     public MenuBar menu;
-    public final ScrollBar scrollBar = new ScrollBar();
     public Circle colorball;
-    public Circle red;
-    public Circle white;
-    public Circle black;
-    public Circle yellow;
-    public Circle green;
-    public Circle blue;
-    public Circle orange;
+    public ScrollPane scrollPane;
 
     @FXML
-    private Canvas canvas;
+    protected Canvas canvas;
 /*
     Takas jos pallerot ei toimikaan
     @FXML
@@ -74,6 +68,8 @@ public class VisualNotesController {
     protected ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
     private FileChooser fileChooser = new FileChooser();
     private File file = null;
+    protected double viewX = 0;
+    protected double viewY = 0;
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
@@ -81,9 +77,6 @@ public class VisualNotesController {
 
     //TODO tärkeys 3: menubar style
 
-    //TODO tärkeys 2: lisää kuvakkeille tooltip tekstit!
-
-    // https://stackoverflow.com/questions/41459107/how-to-show-a-title-for-image-when-i-hover-over-it-in-javafx
 
     @FXML
     public void initialize(){
@@ -92,42 +85,64 @@ public class VisualNotesController {
 
         //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
         setColor("Black");
-        /*
-        Takas jos pallerot ei toimikaan
-        // lisätään värit
-        colorbox.setItems(colorList);
-        // asetetaan musta oletukseksi näkyviin jotta käytettävyys paranee
-        colorbox.setValue("Black");
-        // laitetaan colorbox kuuntelemaan valintoja
-        // colorBoxListener();
-        */
 
         view = new ShapeGraphView(root);
-        view.setView(0,0, canvas.getWidth(), canvas.getHeight());
+        view.setView(viewX, viewY, canvas.getWidth(), canvas.getHeight());
         shapes = view.visibleShapes();
         graphicsContext = canvas.getGraphicsContext2D();
+
+        scrollPane.setContent(canvas);
+
+        System.out.println("scrollpane " + scrollPane.vvalueProperty());
+
+        scrollPane.vvalueProperty().addListener((observableValue, oldValue, newValue) -> {
+            //viewX + newValue;
+            double apu = (Double)newValue - (Double)oldValue;
+            System.out.println("Apu " + apu);
+            apu = apu * 10;
+            //viewX = viewX + apu;
+            viewY = viewY + apu;
+            view.setView(viewX, viewY, canvas.getWidth(), canvas.getHeight());
+            System.out.println("scrollpane bounds " + scrollPane.getViewportBounds());
+            System.out.println("scroll v value " + scrollPane.vvalueProperty());
+            shapes = view.visibleShapes();
+            clearCanvas();
+            drawAll();
+        });
+        /*
+        sp.vvalueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov,
+                                Number old_val, Number new_val) {
+                fileName.setText(imageNames[(new_val.intValue() - 1)/100]);
+            }
+        });
+
+        scrollPane.viewportBoundsProperty().addListener(
+      new ChangeListener<Bounds>() {
+      @Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
+        nodeContainer.setPrefSize(
+          Math.max(node.getBoundsInParent().getMaxX(), newBounds.getWidth()),
+          Math.max(node.getBoundsInParent().getMaxY(), newBounds.getHeight())
+        );
+      }
+
+         */
 
         //filechooser C:n juureen
         fileChooser.setInitialDirectory(new File("C:\\"));
 
 
-
     } //init
 
     /*
-    Takas jos pallerot ei toimikaan
-    public void handleColor(ContextMenuEvent contextMenuEvent) {
-        System.out.println("handle color");
-
-        System.out.println(contextMenuEvent.getPickResult());
-        System.out.println("color name " + color.name());
-        System.out.println("colorbox value " + colorbox.getValue());
-        //valitaan väri
-        color = Color.valueOf(colorbox.getValue());
-        //näytetään valittu väri
-        selectedColor.setFill(color.toFx());
-        //colorball.setFill(color.toFx());
-    }
+        ok eli scroll
+        1. haetaan jotenki skrollauksen määrä
+        2. view.setview
+            - alkuarvo muuttujassa, jolloin alkuarvo + skrollauksen määrä ja kanvas w ja h
+            VAI
+            - joku muu ratkaisu?
+        3. shapes = vis.shapes
+        4. drawAll
 
      */
 
@@ -200,10 +215,7 @@ public class VisualNotesController {
     }
 
 
-
-    //TODO tärkeys:3 - muoto ei katoa kun siirretään
-    //muodon ei tarvitse mennä roottiin ennen kuin hiiri pysähtyy!
-    //Selvitä paras ratkaisu: säikeet? animaatio? mikä muu?
+//TODO tarvitaanko?
     @FXML
     public void mouseDragged(MouseEvent me) {
         //System.out.println("mouse drag event");
@@ -390,6 +402,7 @@ public class VisualNotesController {
      */
 
     //piirtää kaikki
+    //TODO selvitä miksi ladatessa "layer" järjestys muuttuu? säikeet avuksi?
     private void drawAll () {
         for (Shape s: shapes){
             s.render(graphicsContext, view.offset());
@@ -401,4 +414,25 @@ public class VisualNotesController {
         System.out.println(colorId);
         setColor(colorId);
     }
+
+    public void handleScroll(ScrollEvent scrollEvent) {
+    }
+
+        /*
+    Takas jos pallerot ei toimikaan
+    public void handleColor(ContextMenuEvent contextMenuEvent) {
+        System.out.println("handle color");
+
+        System.out.println(contextMenuEvent.getPickResult());
+        System.out.println("color name " + color.name());
+        System.out.println("colorbox value " + colorbox.getValue());
+        //valitaan väri
+        color = Color.valueOf(colorbox.getValue());
+        //näytetään valittu väri
+        selectedColor.setFill(color.toFx());
+        //colorball.setFill(color.toFx());
+    }
+
+     */
+
 }

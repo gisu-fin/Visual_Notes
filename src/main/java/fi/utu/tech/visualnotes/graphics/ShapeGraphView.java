@@ -55,9 +55,7 @@ public class ShapeGraphView {
         if (ret == null) {
             return Optional.empty();
         }
-        //System.out.println("SGV:n extractShapessa ennen removea ret: " + ret.toString());
         root.remove(ret);
-        //System.out.println("SGV:n extractShapessa jälkeen removen: " + root.toString());
         return Optional.of(ret);
     }
 
