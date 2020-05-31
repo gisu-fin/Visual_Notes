@@ -17,12 +17,10 @@ import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.*;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -40,6 +38,15 @@ public class VisualNotesController {
     public MenuItem save;
     public MenuBar menu;
     public final ScrollBar scrollBar = new ScrollBar();
+    public Circle colorball;
+    public Circle red;
+    public Circle white;
+    public Circle black;
+    public Circle yellow;
+    public Circle green;
+    public Circle blue;
+    public Circle orange;
+
     @FXML
     private Canvas canvas;
 
@@ -113,6 +120,7 @@ public class VisualNotesController {
         color = Color.valueOf(colorbox.getValue());
         //näytetään valittu väri
         selectedColor.setFill(color.toFx());
+        //colorball.setFill(color.toFx());
     }
 
     @FXML
@@ -377,4 +385,16 @@ public class VisualNotesController {
         }
     }
 
+    public void handleColorMenu(MouseEvent mouseEvent) {
+        String colorId = mouseEvent.getPickResult().getIntersectedNode().getId();
+        System.out.println(colorId);
+
+        color = Color.valueOf(colorId);
+        //näytetään valittu väri
+        selectedColor.setFill(color.toFx());
+        colorball.setFill(color.toFx());
+
+        //Circle apu = mouseEvent.copyFor(this.)
+        //System.out.println((Control).mouseEvent.getSource().);
+    }
 }
