@@ -71,12 +71,7 @@ public class VisualNotesController {
     protected double viewX = 0;
     protected double viewY = 0;
 
-    //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
-
-    //TODO tärkeys 1: about osio joko pois tai joku alert tms missä teksti on!
-
     //TODO tärkeys 3: menubar style
-
 
     @FXML
     public void initialize(){
@@ -95,6 +90,7 @@ public class VisualNotesController {
 
         System.out.println("scrollpane " + scrollPane.vvalueProperty());
 
+        //travitsee lisää säätöä, toimii jotenkin
         scrollPane.vvalueProperty().addListener((observableValue, oldValue, newValue) -> {
             //viewX + newValue;
             double apu = (Double)newValue - (Double)oldValue;
@@ -109,24 +105,7 @@ public class VisualNotesController {
             clearCanvas();
             drawAll();
         });
-        /*
-        sp.vvalueProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov,
-                                Number old_val, Number new_val) {
-                fileName.setText(imageNames[(new_val.intValue() - 1)/100]);
-            }
-        });
 
-        scrollPane.viewportBoundsProperty().addListener(
-      new ChangeListener<Bounds>() {
-      @Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
-        nodeContainer.setPrefSize(
-          Math.max(node.getBoundsInParent().getMaxX(), newBounds.getWidth()),
-          Math.max(node.getBoundsInParent().getMaxY(), newBounds.getHeight())
-        );
-      }
-
-         */
 
         //filechooser C:n juureen
         fileChooser.setInitialDirectory(new File("C:\\"));
@@ -134,17 +113,6 @@ public class VisualNotesController {
 
     } //init
 
-    /*
-        ok eli scroll
-        1. haetaan jotenki skrollauksen määrä
-        2. view.setview
-            - alkuarvo muuttujassa, jolloin alkuarvo + skrollauksen määrä ja kanvas w ja h
-            VAI
-            - joku muu ratkaisu?
-        3. shapes = vis.shapes
-        4. drawAll
-
-     */
 
     @FXML
     void mousePressed (MouseEvent me) {
@@ -215,30 +183,21 @@ public class VisualNotesController {
     }
 
 
-//TODO tarvitaanko?
-    @FXML
-    public void mouseDragged(MouseEvent me) {
-        //System.out.println("mouse drag event");
-
-
-    }
-
-
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
     public void handleMoveClicked(MouseEvent mouseEvent) {
         shapeType = null;
         canvas.setCursor(Cursor.MOVE);
     }
 
-    /*  TODO tärkeys 2: lataaminen lataa "vanhan" päälle ellei kaikkea poista ensin käyttäjälle ei nyt kuitenkaan ilmoiteta asiasta
-                        vahinkoklikkaus voi aiheuttaa työn katoamisen
-                        anna tilaisuus peruttaa lataus ja tallentaa aiempi työ?
-                        alert missä kyllä ja peruuta?
-                        miten peruutus toimii käytännössä?
-                     */
     public void handleLoadClicked(ActionEvent actionEvent) {
 
-        System.out.println("load clicked");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Load alert!");
+        alert.setHeaderText("Loading will clear the canvas, click cancel if you want to save your work before loading.");
+        alert.setContentText("Are you sure?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
 
         Window stage = this.menu.getScene().getWindow();
         fileChooser.setTitle("Load file");
@@ -274,10 +233,14 @@ public class VisualNotesController {
                 }).start();
             }
             }
+        } else {
+            // ... user chose CANCEL or closed the dialog
+            System.out.println("cancelled");
+        }
 
     }
 
-    Task <Void> saves = new Task<Void>() {
+    Task <Void> saves = new Task<>() {
         @Override
         protected Void call() throws Exception {
             root.save(Paths.get(file.getAbsolutePath()));
@@ -312,23 +275,10 @@ public class VisualNotesController {
                 //jäätymistestiä varten
                 //root.save(Paths.get(file.getAbsolutePath()));
 
-                /*
-                new Thread(() -> {
-                    try {
-                        root.save(Paths.get(file.getAbsolutePath()));
-                        System.out.println("run try");
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-
-                 */
-
             }
         } catch (Exception e) {
             System.out.println("save failed: " + e.getMessage());
         }
-
 
 
     } //handle save
