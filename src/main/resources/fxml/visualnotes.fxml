@@ -181,7 +181,7 @@
               <content>
                 <AnchorPane>
                      <children>
-                        <Canvas fx:id="canvas" height="700.0" onMouseDragged="#mouseDragged" onMousePressed="#mousePressed" onMouseReleased="#mouseReleased" width="900.0" />
+                        <Canvas fx:id="canvas" height="700.0" onMousePressed="#mousePressed" onMouseReleased="#mouseReleased" width="900.0" />
                      </children>
                   </AnchorPane>
               </content>

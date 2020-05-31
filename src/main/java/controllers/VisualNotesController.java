@@ -1,11 +1,14 @@
 package controllers;
 
 import fi.utu.tech.graphics.Point2D;
+import fi.utu.tech.visualnotes.Main;
 import fi.utu.tech.visualnotes.graphics.Color;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -15,14 +18,17 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
@@ -37,7 +43,14 @@ public class VisualNotesController {
 
     @FXML
     protected Canvas canvas;
+/*
+    Takas jos pallerot ei toimikaan
+    @FXML
+    private Rectangle selectedColor;
+    @FXML
+    private ChoiceBox<String> colorbox;
 
+ */
     public Boolean fill;
     public GraphicsContext graphicsContext;
     public Point2D pointStart;
@@ -57,6 +70,8 @@ public class VisualNotesController {
     private File file = null;
     protected double viewX = 0;
     protected double viewY = 0;
+
+    //TODO tärkeys 3: menubar style
 
     @FXML
     public void initialize(){
@@ -113,12 +128,12 @@ public class VisualNotesController {
         //gc.strokeLine(startX, startY, me.getSceneX(), me.getSceneY());
         pointEnd = new Point2D(me.getX(), me.getY());
         if (shapeType != null) {
-            //System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
+            System.out.println("shape: " + shapeType + " color: " + color + " start: " + pointStart + " end: " + pointEnd);
             shape = view.createShape(shapeType, fill, color, pointStart, pointEnd);
             root.add(shape);
             shape.render(graphicsContext, view.offset());
             shapes = view.visibleShapes();
-            //System.out.println("lisätty a " + shapes.size());
+            System.out.println("lisätty a " + shapes.size());
 
         }else {
 
@@ -152,9 +167,15 @@ public class VisualNotesController {
 
                 drawAll();
 
-                //System.out.println("lisätty a, shapes pituus " + shapes.size());
+                //a.render(graphicsContext, view.offset());
+                //System.out.println("lisätty a " + shapes.toArray());
+
+                System.out.println("lisätty a, shapes pituus " + shapes.size());
+
             }
+
         }
+
     }//released
 
     protected void clearCanvas () {
@@ -206,11 +227,14 @@ public class VisualNotesController {
                             shapes = view.visibleShapes();
                             drawAll();
                         });
+
+                        System.out.println("load run try");
+
                 }).start();
             }
             }
         } else {
-            // cancel
+            // ... user chose CANCEL or closed the dialog
             System.out.println("cancelled");
         }
 
@@ -242,8 +266,8 @@ public class VisualNotesController {
                 File dir = file.getParentFile();//gets the selected directory
                 //update the file chooser directory to user selected so the choice is "remembered"
                 fileChooser.setInitialDirectory(dir);
-                //System.out.println("save: " + file.getAbsolutePath());
-                //System.out.println("save paths.get: " + file.getName());
+                System.out.println("save: " + file.getAbsolutePath());
+                System.out.println("save paths.get: " + file.getName());
 
                 Thread th = new Thread(saves);
                 th.setDaemon(true);
@@ -267,11 +291,15 @@ public class VisualNotesController {
 
 
     public void handleReset(ActionEvent actionEvent) {
-        //System.out.println("handle reset");
+        System.out.println("handle reset");
         root.clear();
         graphicsContext.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
+
+    public void handleAbout(ActionEvent actionEvent) {
+        System.out.println("Harjoitustyö D - Mirva Tapola");
+    }
 
     public void handleLine(MouseEvent mouseEvent) {
         fill = true;
@@ -337,6 +365,8 @@ public class VisualNotesController {
         setColor(colorId);
     }
 
+    public void handleScroll(ScrollEvent scrollEvent) {
+    }
 
         /*
     Takas jos pallerot ei toimikaan
