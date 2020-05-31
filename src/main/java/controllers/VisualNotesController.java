@@ -49,13 +49,14 @@ public class VisualNotesController {
 
     @FXML
     private Canvas canvas;
-
+/*
+    Takas jos pallerot ei toimikaan
     @FXML
     private Rectangle selectedColor;
-
     @FXML
     private ChoiceBox<String> colorbox;
 
+ */
     public Boolean fill;
     public GraphicsContext graphicsContext;
     public Point2D pointStart;
@@ -76,9 +77,9 @@ public class VisualNotesController {
 
     //TODO tärkeys 1: skrollaus - älä unohda spatiaalisen rakenteen näkymän vieritystä
 
-    //TODO tärkeys 3: värin valinta - kauniimmaksi
+    //TODO tärkeys 1: about osio joko pois tai joku alert tms missä teksti on!
 
-    //POPUP? listaan palloja missä värit?
+    //TODO tärkeys 3: menubar style
 
     //TODO tärkeys 2: lisää kuvakkeille tooltip tekstit!
 
@@ -88,15 +89,18 @@ public class VisualNotesController {
     public void initialize(){
 
         System.out.println("initialize");
+
+        //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
+        setColor("Black");
+        /*
+        Takas jos pallerot ei toimikaan
         // lisätään värit
         colorbox.setItems(colorList);
         // asetetaan musta oletukseksi näkyviin jotta käytettävyys paranee
         colorbox.setValue("Black");
-        //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
-        setColor("Black");
-
         // laitetaan colorbox kuuntelemaan valintoja
-        colorBoxListener();
+        // colorBoxListener();
+        */
 
         view = new ShapeGraphView(root);
         view.setView(0,0, canvas.getWidth(), canvas.getHeight());
@@ -110,6 +114,8 @@ public class VisualNotesController {
 
     } //init
 
+    /*
+    Takas jos pallerot ei toimikaan
     public void handleColor(ContextMenuEvent contextMenuEvent) {
         System.out.println("handle color");
 
@@ -122,6 +128,8 @@ public class VisualNotesController {
         selectedColor.setFill(color.toFx());
         //colorball.setFill(color.toFx());
     }
+
+     */
 
     @FXML
     void mousePressed (MouseEvent me) {
@@ -364,9 +372,11 @@ public class VisualNotesController {
     //vähentää rivejä
     protected void setColor (String newColor) {
         color = Color.valueOf(newColor);
-        selectedColor.setFill(color.toFx());
+        //selectedColor.setFill(color.toFx());
+        colorball.setFill(color.toFx());
     }
 
+    /*
     // siirto initistä selkeyden vuoksi
     protected void colorBoxListener () {
         colorbox.getSelectionModel().selectedItemProperty().addListener((v, oldColor, newColor) -> {
@@ -377,6 +387,7 @@ public class VisualNotesController {
             //selectedColor.setFill(color.toFx());
         });
     }
+     */
 
     //piirtää kaikki
     private void drawAll () {
@@ -385,16 +396,9 @@ public class VisualNotesController {
         }
     }
 
-    public void handleColorMenu(MouseEvent mouseEvent) {
+    public void handleColorChange(MouseEvent mouseEvent) {
         String colorId = mouseEvent.getPickResult().getIntersectedNode().getId();
         System.out.println(colorId);
-
-        color = Color.valueOf(colorId);
-        //näytetään valittu väri
-        selectedColor.setFill(color.toFx());
-        colorball.setFill(color.toFx());
-
-        //Circle apu = mouseEvent.copyFor(this.)
-        //System.out.println((Control).mouseEvent.getSource().);
+        setColor(colorId);
     }
 }
