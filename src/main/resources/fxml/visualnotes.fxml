@@ -27,21 +27,16 @@
          <top>
             <MenuBar fx:id="menu" cache="true" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" style="-fx-background-color: #EBEBEB; -fx-padding: 6;" BorderPane.alignment="CENTER">
               <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" style="-fx-padding: 2 6 2 6;" text="File">
                   <items>
                     <MenuItem fx:id="save" mnemonicParsing="false" onAction="#handleSaveClicked" text="Save" />
                         <MenuItem fx:id="load" mnemonicParsing="false" onAction="#handleLoadClicked" text="Load" />
                         <MenuItem fx:id="exit" mnemonicParsing="false" onAction="#handleExit" text="Exit" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
+                <Menu mnemonicParsing="false" style="-fx-padding: 2 6 2 6;" text="Edit">
                   <items>
                     <MenuItem fx:id="reset" mnemonicParsing="false" onAction="#handleReset" text="Reset" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem fx:id="about" mnemonicParsing="false" onAction="#handleAbout" text="About" />
                   </items>
                 </Menu>
               </menus>
