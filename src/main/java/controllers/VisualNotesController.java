@@ -38,14 +38,7 @@ public class VisualNotesController {
 
     @FXML
     protected Canvas canvas;
-/*
-    Takas jos pallerot ei toimikaan
-    @FXML
-    private Rectangle selectedColor;
-    @FXML
-    private ChoiceBox<String> colorbox;
 
- */
     public Boolean fill;
     public GraphicsContext graphicsContext;
     public Point2D pointStart;
@@ -66,22 +59,12 @@ public class VisualNotesController {
     protected double viewX = 0;
     protected double viewY = 0;
 
-    //TODO tärkeys 3: menubar style
-
     @FXML
     public void initialize(){
 
         System.out.println("initialize");
 
-        //muokataan menua
-        //menu.setStyle("-fx-padding: 5 30 8 30;");
-
         menu.getStylesheets().add("style.css");
-
-        //menuFile.setStyle("-fx-padding: 2 20 2 20;");
-        //menuEdit.setStyle("-fx-padding: 2 20 2 20;");
-
-        //menuEdit.getItems().forEach(menuItem -> menuItem.setStyle("-fx-padding: 2 10 2 10;" ));
 
         //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
         setColor("Black");
@@ -333,19 +316,6 @@ public class VisualNotesController {
         colorBall.setFill(color.toFx());
     }
 
-    /*
-    // siirto initistä selkeyden vuoksi
-    protected void colorBoxListener () {
-        colorbox.getSelectionModel().selectedItemProperty().addListener((v, oldColor, newColor) -> {
-            System.out.println(newColor);
-            //valitaan väri
-            setColor(newColor);
-            //color = Color.valueOf(newValue);
-            //selectedColor.setFill(color.toFx());
-        });
-    }
-     */
-
     //piirtää kaikki
     //TODO selvitä miksi ladatessa "layer" järjestys muuttuu? säikeet avuksi?
     private void drawAll () {
@@ -360,21 +330,5 @@ public class VisualNotesController {
         setColor(colorId);
     }
 
-        /*
-    Takas jos pallerot ei toimikaan
-    public void handleColor(ContextMenuEvent contextMenuEvent) {
-        System.out.println("handle color");
-
-        System.out.println(contextMenuEvent.getPickResult());
-        System.out.println("color name " + color.name());
-        System.out.println("colorbox value " + colorbox.getValue());
-        //valitaan väri
-        color = Color.valueOf(colorbox.getValue());
-        //näytetään valittu väri
-        selectedColor.setFill(color.toFx());
-        //colorball.setFill(color.toFx());
-    }
-
-     */
 
 }
