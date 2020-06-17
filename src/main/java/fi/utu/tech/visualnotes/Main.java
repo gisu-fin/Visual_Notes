@@ -18,9 +18,8 @@ public class Main extends Application {
         Scene scene = new Scene(root);
 
         /*
-        Icon made by "http://www.freepik.com/"
+        Icons made by "http://www.freepik.com/"
          */
-
 
         stage.getIcons().add(new Image("paint-brush-16.png"));
         stage.getIcons().add(new Image("paint-brush-24.png"));

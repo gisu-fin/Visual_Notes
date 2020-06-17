@@ -64,6 +64,7 @@ public class VisualNotesController {
 
         System.out.println("initialize");
 
+        //lisätään menuun tyyli
         menu.getStylesheets().add("style.css");
 
         //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
@@ -76,9 +77,7 @@ public class VisualNotesController {
 
         scrollPane.setContent(canvas);
 
-        //System.out.println("scrollpane " + scrollPane.vvalueProperty());
-
-        //travitsee lisää säätöä, toimii jotenkin
+        //TODO: tarvitsee lisää säätöä, toimii jotenkin
         scrollPane.vvalueProperty().addListener((observableValue, oldValue, newValue) -> {
             //viewX + newValue;
             double apu = (Double)newValue - (Double)oldValue;
@@ -94,10 +93,8 @@ public class VisualNotesController {
             drawAll();
         });
 
-
         //filechooser C:n juureen
         fileChooser.setInitialDirectory(new File("C:\\"));
-
 
     } //init
 
@@ -168,6 +165,7 @@ public class VisualNotesController {
     }
 
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
+    //TODO korjaa move niin että toimii ilman nykimistä
     public void handleMoveClicked(MouseEvent mouseEvent) {
         shapeType = null;
         canvas.setCursor(Cursor.MOVE);
@@ -198,7 +196,6 @@ public class VisualNotesController {
             String[] n = name.split("\\.");
             if (!n[0].isEmpty()) { //&& shapes.size() == 0
                 new Thread(() -> {
-
                     try {
                         root.load(Paths.get(file.getAbsolutePath()));
                     } catch (IOException e) {
