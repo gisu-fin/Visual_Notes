@@ -33,6 +33,8 @@ public class VisualNotesController {
     public MenuBar menu;
     public Circle colorBall;
     public ScrollPane scrollPane;
+    public Menu menuFile;
+    public Menu menuEdit;
 
     @FXML
     protected Canvas canvas;
@@ -70,6 +72,16 @@ public class VisualNotesController {
     public void initialize(){
 
         System.out.println("initialize");
+
+        //muokataan menua
+        //menu.setStyle("-fx-padding: 5 30 8 30;");
+
+        menu.getStylesheets().add("style.css");
+
+        //menuFile.setStyle("-fx-padding: 2 20 2 20;");
+        //menuEdit.setStyle("-fx-padding: 2 20 2 20;");
+
+        //menuEdit.getItems().forEach(menuItem -> menuItem.setStyle("-fx-padding: 2 10 2 10;" ));
 
         //asetetaan musta väriksi jotta vältytään nullin tuomalta värin muutos ongelmalta
         setColor("Black");
@@ -126,11 +138,11 @@ public class VisualNotesController {
             root.add(shape);
             shape.render(graphicsContext, view.offset());
             shapes = view.visibleShapes();
-            System.out.println("lisätty a " + shapes.size());
+            //System.out.println("lisätty a " + shapes.size());
 
         }else {
 
-            System.out.println("mouse release else " + pointStart);
+            //System.out.println("mouse release else " + pointStart);
 
             //tallennetaan extractShapen palauttama muoto:
             moving = view.extractShape(pointStart);
@@ -344,7 +356,7 @@ public class VisualNotesController {
 
     public void handleColorChange(MouseEvent mouseEvent) {
         String colorId = mouseEvent.getPickResult().getIntersectedNode().getId();
-        System.out.println(colorId);
+        //System.out.println(colorId);
         setColor(colorId);
     }
 

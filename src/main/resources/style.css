@@ -1,0 +1,82 @@
+.canvas {
+    -fx-background-color: antiquewhite, white ;
+    -fx-background-insets: 0, 20 ;
+    -fx-padding: 20 ;
+}
+
+/*
+.menu {
+    -fx-padding: 5, 30, 8, 30;
+    -fx-background-color: black;
+}
+https://stackoverflow.com/questions/12299162/how-to-style-menu-button-and-menu-items
+
+#D4D4D4;
+*/
+
+{
+    -fx-my-menu-color: #EAEDED;
+    -fx-my-menu-color-highlighted: #D5DBDB;
+    -fx-my-menu-font-color: #000000;
+    -fx-my-menu-font-color-highlighted: #C61313;
+}
+
+/* MENU BAR + Top-level MENU BUTTONS */
+/*** The menu bar itself ***/
+.menu-bar {
+    -fx-background-color: -fx-my-menu-color;
+}
+
+/*** Top-level menu itself (not selected / hovered) ***/
+.menu-bar > .container > .menu-button {
+    -fx-background-color: -fx-my-menu-color;
+}
+
+/*** Top-level menu's label (not selected / hovered) ***/
+.menu-bar > .container > .menu-button > .label {
+    -fx-padding: 1 8 1 8;
+    -fx-text-fill: -fx-my-menu-font-color;
+}
+
+/*** Top-level menu itself (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover,
+.menu-bar > .container > .menu-button:focused,
+.menu-bar > .container > .menu-button:showing {
+    -fx-background-color: -fx-my-menu-color-highlighted;
+}
+
+/*** Top-level menu's label (selected / hovered) ***/
+.menu-bar > .container > .menu-button:hover > .label,
+.menu-bar > .container > .menu-button:focused > .label,
+.menu-bar > .container > .menu-button:showing > .label {
+    -fx-background-color: -fx-my-menu-color-highlighted;
+}
+
+/* MENU ITEM (children of a MENU BUTTON) */
+/*** The item itself (not hovered / focused) ***/
+.menu-item {
+    -fx-background-color: -fx-my-menu-color;
+
+}
+
+/*** The item's label (not hovered / focused) ***/
+.menu-item .label {
+    -fx-text-fill: -fx-my-menu-font-color;
+    -fx-padding: 0 7 0 7;
+}
+
+/*** The item itself (hovered / focused) ***/
+.menu-item:focused, .menu-item:hovered {
+    -fx-background-color: -fx-my-menu-color-highlighted;
+}
+
+/*** The item's label (hovered / focused) ***/
+.menu-item:focused .label, .menu-item:hovered .label {
+    -fx-background-color: -fx-my-menu-color-highlighted;
+}
+
+/* CONTEXT MENU */
+/*** The context menu that contains a menu's menu items ***/
+.context-menu {
+    -fx-background-color: -fx-my-menu-color;
+}

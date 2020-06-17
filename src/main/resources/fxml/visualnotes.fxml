@@ -25,16 +25,16 @@
    <children>
       <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <top>
-            <MenuBar fx:id="menu" cache="true" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" style="-fx-background-color: #EBEBEB; -fx-padding: 6;" BorderPane.alignment="CENTER">
+            <MenuBar id="menubar" fx:id="menu" cache="true" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" stylesheets="@../style.css" BorderPane.alignment="CENTER">
               <menus>
-                <Menu mnemonicParsing="false" style="-fx-padding: 2 6 2 6;" text="File">
+                <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
                   <items>
                     <MenuItem fx:id="save" mnemonicParsing="false" onAction="#handleSaveClicked" text="Save" />
                         <MenuItem fx:id="load" mnemonicParsing="false" onAction="#handleLoadClicked" text="Load" />
                         <MenuItem fx:id="exit" mnemonicParsing="false" onAction="#handleExit" text="Exit" />
                   </items>
                 </Menu>
-                <Menu mnemonicParsing="false" style="-fx-padding: 2 6 2 6;" text="Edit">
+                <Menu fx:id="menuEdit" mnemonicParsing="false" text="Edit">
                   <items>
                     <MenuItem fx:id="reset" mnemonicParsing="false" onAction="#handleReset" text="Reset" />
                   </items>
@@ -46,16 +46,13 @@
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
                <BorderPane.margin>
                   <Insets />
                </BorderPane.margin>
             </MenuBar>
          </top>
          <left>
-            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefWidth="100.0" spacing="4.0">
+            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" prefWidth="100.0" spacing="4.0" style="-fx-background-color: #F3F3F3;">
                <children>
                   <Button mnemonicParsing="false" onMouseClicked="#handleMoveClicked" style="-fx-background-color: transparent;">
                      <graphic>
@@ -128,7 +125,10 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Line endX="-18.5" startX="-100.0" stroke="#8d8d8d" />
+                  <Line endX="-18.5" startX="-100.0" stroke="#8d8d8d">
+                     <VBox.margin>
+                        <Insets bottom="4.0" left="1.0" right="1.0" top="2.0" />
+                     </VBox.margin></Line>
                   <!--
                   Kommentoi pois, jos ongelma uuden kanssa niin palauta
                   <ChoiceBox fx:id="colorbox" onContextMenuRequested="#handleColor" prefWidth="150.0" />
@@ -179,7 +179,7 @@
          <center>
             <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" minViewportHeight="700.0" minViewportWidth="900.0" pannable="true" prefViewportHeight="700.0" prefViewportWidth="900.0" vbarPolicy="ALWAYS" vmax="30.0" BorderPane.alignment="CENTER">
               <content>
-                <AnchorPane>
+                <AnchorPane style="-fx-background-color: #ffffff; -fx-border-width: 2; -fx-border-color: #9E9E9E;">
                      <children>
                         <Canvas fx:id="canvas" height="700.0" onMousePressed="#mousePressed" onMouseReleased="#mouseReleased" width="900.0" />
                      </children>
