@@ -6,8 +6,6 @@ import fi.utu.tech.visualnotes.graphics.ShapeGraphRoot;
 import fi.utu.tech.visualnotes.graphics.ShapeGraphView;
 import fi.utu.tech.visualnotes.graphics.shapes.Shape;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,7 +30,6 @@ public class VisualNotesController {
     public MenuItem save;
     public MenuBar menu;
     public Circle colorBall;
-    public ScrollPane scrollPane;
     public Menu menuFile;
     public Menu menuEdit;
 
@@ -53,11 +50,10 @@ public class VisualNotesController {
     protected double height;
     protected double width;
     protected Color color;
-    protected ObservableList<String> colorList = FXCollections.observableArrayList(Color.names());
     private FileChooser fileChooser = new FileChooser();
     private File file = null;
-    protected double viewX = 0;
-    protected double viewY = 0;
+    //protected double viewX = 0;
+    //protected double viewY = 0;
 
     @FXML
     public void initialize(){
@@ -71,27 +67,9 @@ public class VisualNotesController {
         setColor("Black");
 
         view = new ShapeGraphView(root);
-        view.setView(viewX, viewY, canvas.getWidth(), canvas.getHeight());
+        view.setView(0, 0, canvas.getWidth(), canvas.getHeight());
         shapes = view.visibleShapes();
         graphicsContext = canvas.getGraphicsContext2D();
-
-        scrollPane.setContent(canvas);
-
-        //TODO: tarvitsee lisää säätöä, toimii jotenkin
-        scrollPane.vvalueProperty().addListener((observableValue, oldValue, newValue) -> {
-            //viewX + newValue;
-            double apu = (Double)newValue - (Double)oldValue;
-            //System.out.println("Apu " + apu);
-            apu = apu * 10;
-            //viewX = viewX + apu;
-            viewY = viewY + apu;
-            view.setView(viewX, viewY, canvas.getWidth(), canvas.getHeight());
-            //System.out.println("scrollpane bounds " + scrollPane.getViewportBounds());
-            //System.out.println("scroll v value " + scrollPane.vvalueProperty());
-            shapes = view.visibleShapes();
-            clearCanvas();
-            drawAll();
-        });
 
         //filechooser C:n juureen
         fileChooser.setInitialDirectory(new File("C:\\"));
@@ -161,11 +139,10 @@ public class VisualNotesController {
     }//released
 
     protected void clearCanvas () {
-        graphicsContext.clearRect(0,0, canvas.getHeight(), canvas.getWidth());
+        graphicsContext.clearRect(0,0, canvas.getWidth(), canvas.getHeight());
     }
 
     //vaihtaa kursorin move-muotoon ja muodon nulliksi jottei muotoja voi piirtää
-    //TODO korjaa move niin että toimii ilman nykimistä
     public void handleMoveClicked(MouseEvent mouseEvent) {
         shapeType = null;
         canvas.setCursor(Cursor.MOVE);
